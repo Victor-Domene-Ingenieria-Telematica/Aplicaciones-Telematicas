@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+    <meta charset="UTF-8">
+    <title>ej22</title>
+    <style>
+        /* Esto se aplica a todo el body */
+        body {
+            background-color: wheat;
+        }
+
+        /* Esto se aplica solo a los titulos h1 */
+        h1 {
+            text-decoration: underline;
+            text-align: center;
+
+        }
+
+        /* Esto se aplica a todos los titulos h2 */
+        h2{
+            text-decoration: underline;
+        }
+
+        /* Esto se aplica a clases que sean piano dentro de instrumento */
+        .instrumento .piano {
+            color: red;
+        }
+
+        /* Esto se aplica a las etiquetas li que tengan la clase flauta */
+        li.flauta {
+            color: blue;
+        }
+
+        /* Esto se aplica a clases que sean violin dentro de instrumento */
+        .instrumento .violin {
+            color: green;
+        }
+
+        /* Esto se aplica al div con el id exacto sonido */
+        div#sonido {
+            font-style: italic;
+        }
+
+
+    </style>
+</head>
+<body>
+    <h1>Clase de Música</h1>
+    
+    <h2>Instrumentos que tocan los alumnos</h2>
+    
+    <div class="instrumento">
+        <ul>
+            <li class="piano">El piano lo toca Víctor</li>
+            <li class="flauta">La flauta la toca Alejandro</li>
+            <li class="violin">El violin lo toca Jesús</li>
+        </ul>
+        <p class="flauta">Alejandro también tiene una flauta travesera en casa.</p>
+    </div>
+
+    <h3>(Detalles teóricos de la clase)</h3>
+
+    <h2>Tipos de sonidos según su intensidad</h2>
+    
+    <div id="sonido">
+        <ol>
+            <li class="forte">Forte: es un sonido muy fuerte</li>
+            <li class="mezzoforte">Mezzoforte: es un sonido medio fuerte</li>
+            <li class="mezzopiano">Mezzopiano: es un sonido medio suave</li>
+            <li class="piano">Piano: es un sonido muy flojo</li>
+        </ol>
+    </div>
+
+    <div class="sonido">
+        <p>Nota: el silencio también es una parte vital de la música.</p>
+    </div>
+    
+</body>
+</html>

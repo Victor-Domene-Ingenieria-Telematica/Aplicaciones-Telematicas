@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+    <title>Practica 1.5 - Formularios(Alta de Cliente)</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+    <h1>Registro de Nuevo Cliente</h1>
+    <h2>Rellene el siguiente formulario para darse de alta en nuestra plataforma</h2>
+
+    <form method="POST">  <!-- Aunque no haria falta poner el method ya que no hay backend
+                                pero un formulario siempre se envia con POST y no con GET-->
+        <fieldset>
+            <legend><strong>Datos Personales</strong></legend>
+
+            <label for="nombre">Nombre completo:</label>
+            <input type="text" name="nombre" id="nombre">
+            <br><br>
+
+            <label for="email">Correo electrónico:</label>
+            <input type="email" name="email" placeholder="correo@gmail.com" id="email">
+            <br><br>
+
+            <label for="password">Contraseña:</label>
+            <input type="password" name="password" id="password">
+            <br><br>
+
+            <label for="telefono">Teléfono móvil:</label>
+            <input type="tel" name="telefono" id="telefono">
+            <br><br>
+
+            <label for="nacimiento">Fecha de nacimiento:</label>
+            <input type="date" name="nacimiento" id="nacimiento">
+            <br><br>
+
+            <p>Método de contacto preferido:</p>
+            <input type="radio" id="contacto_email" name="contacto" value="email" checked> Por Email
+            <br>
+            <input type="radio" id="contacto_tel" name="contacto" value="telefono"> Por Teléfono
+        
+        </fieldset>
+
+        <br>
+
+        <fieldset>
+            <legend><strong>Términos y Condiciones</strong></legend>
+            <input type="checkbox" id="terminos" name="terminos" required> Acepto los términos y condiciones de la empresa
+            <br>
+
+            <input type="checkbox" id="boletin" name="boletin"> Deseo recibir ofertas y promociones
+        </fieldset>
+
+        <br>
+        <button type="submit">Completar Registro</button>
+
+    </form>
+
+</body>
+</html>
