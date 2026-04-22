@@ -1,17 +1,58 @@
 <!DOCTYPE html>
-<html lang="es-ES">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Práctica 4.4 - Carta</title>
+    <title>Auto-Gourmet | Menú</title>
+    <style>
+        /* Contenedor de idiomas arriba a la derecha */
+        .idiomas-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-flag {
+            font-size: 1.5rem; /* Más pequeñas */
+            border: none;
+            background: white;
+            padding: 5px;
+            border-radius: 50%; /* Las hace circulares si quieres */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .btn-flag:hover {
+            transform: scale(1.2);
+            background: #f8f9fa;
+        }
+
+        h1 { font-weight: 800; margin-top: 40px; }
+    </style>
 </head>
 <body class="bg-light">
-    <div class="container mt-5">
-        <h1 class="text-center mb-1">Restaurante Auto-Gourmet</h1>
-        <h2 class="text-center mb-5">Nuestra Carta</h2>
-        
-        <div id="contenedor-menu"></div>
+
+    <div class="idiomas-container">
+        <button id="btn-es" class="btn-flag" title="Español">🇪🇸</button>
+        <button id="btn-en" class="btn-flag" title="English">🇬🇧</button>
+        <button id="btn-fr" class="btn-flag" title="Français">🇫🇷</button>
+        <button id="btn-de" class="btn-flag" title="Deutsch">🇩🇪</button>
+    </div>
+
+    <div class="container py-5">
+        <header class="text-center mb-5">
+            <h1>AUTO-GOURMET</h1>
+        </header>
+
+        <div class="row justify-content-center">
+            <div id="contenedor-menu" class="col-md-8">
+                </div>
+        </div>
     </div>
 
     <script src="carta.js"></script>
