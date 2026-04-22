@@ -9,6 +9,25 @@ const lista_menu = [
     ["p", "p1", "p2", "p3"]
 ];
 
+// --- MAPEO DE IMÁGENES (Escribe aquí el nombre real de tus archivos) ---
+const imagenesCategorias = {
+    "b": "images/bebidas/Icono_bebidas.png",
+    "e": "images/entrantes/Icono_entrante.png",
+    "co": "images/cortes/Icono_cortes.png",
+    "h": "images/hamburguesas/Icono_hamburguesas.png",
+    "ca": "images/cachopos/Icono_cachopos.png",
+    "p": "images/postres/Icono_postres.png"
+};
+
+const imagenesProductos = {
+    "b1": "images/bebidas/agua.png", "b2": "images/bebidas/cocacola.png", "b3": "images/bebidas/fanta.png", "b4": "images/bebidas/cerveza.png", "b5": "images/bebidas/vino.png",
+    "e1": "images/entrantes/carpaccio.png", "e2": "images/entrantes/chorizo.png", "e3": "images/entrantes/croquetas.png", "e4": "images/entrantes/huevos.png",
+    "co1": "images/cortes/solomillo.png", "co2": "images/cortes/tomahawk.png",
+    "h1": "images/hamburguesas/hamburguesaG.png", "h2": "images/hamburguesas/hamburguesaBBQ.png",
+    "ca1": "images/cachopos/cachopo_iberico_trufado.png", "ca2": "images/cachopos/cachopo_tex_mex.png",
+    "p1": "images/postres/tarta_queso_ahumada.png", "p2": "images/postres/coulant.png", "p3": "images/postres/fruta.png"
+};
+
 // --- OBJETOS INDEPENDIENTES DE CATEGORÍAS ---
 const categorias_es = { "b": "BEBIDAS", "e": "ENTRANTES", "co": "CORTES GOURMET", "h": "HAMBURGUESAS", "ca": "CACHOPOS", "p": "POSTRES" };
 const categorias_en = { "b": "DRINKS", "e": "STARTERS", "co": "GOURMET CUTS", "h": "BURGERS", "ca": "CACHOPOS", "p": "DESSERTS" };
@@ -58,47 +77,63 @@ function generarCarta() {
     const contenedor = document.querySelector("#contenedor-menu");
     contenedor.innerHTML = ""; 
 
-    // Lógica para elegir el objeto correcto según el idioma
+    // Lógica para seleccionar el idioma
     let cats, prods;
-
     if (idiomaActual === "es") {
-        cats = categorias_es;
-        prods = productos_es;
+        cats = categorias_es; prods = productos_es;
     } else if (idiomaActual === "en") {
-        cats = categorias_en;
-        prods = productos_en;
+        cats = categorias_en; prods = productos_en;
     } else if (idiomaActual === "fr") {
-        cats = categorias_fr;
-        prods = productos_fr;
+        cats = categorias_fr; prods = productos_fr;
     } else if (idiomaActual === "de") {
-        cats = categorias_de;
-        prods = productos_de;
-    }
+        cats = categorias_de; prods = productos_de;
+    } 
 
     lista_menu.forEach(sublista => {
-        const tabla = document.createElement("table");
-        tabla.className = "table table-bordered mb-5 shadow-sm bg-white text-center";
+        // Creamos la SECCIÓN de la categoría (reemplaza a la tabla)
+        const seccion = document.createElement("div");
+        seccion.className = "categoria-seccion";
 
-        const thead = document.createElement("thead");
-        const filaTit = document.createElement("tr");
-        const th = document.createElement("th");
-        th.className = "table-dark py-3"; 
-        th.textContent = cats[sublista[0]]; 
-        filaTit.append(th);
-        thead.append(filaTit);
-        tabla.append(thead);
+        // CABECERA DE CATEGORÍA
+        const header = document.createElement("div");
+        header.className = "categoria-header";
+        
+        let codCat = sublista[0];
+        let imgCat = document.createElement("img");
+        imgCat.src = imagenesCategorias[codCat]; // Ruta corregida
+        imgCat.className = "img-categoria";
+        
+        let titulo = document.createElement("h2");
+        titulo.className = "categoria-titulo";
+        titulo.textContent = cats[codCat];
 
-        const tbody = document.createElement("tbody");
+        header.append(imgCat, titulo);
+        seccion.append(header);
+
+        // GRID DE PLATOS
+        const grid = document.createElement("div");
+        grid.className = "platos-grid";
+
         for (let i = 1; i < sublista.length; i++) {
-            const filaPlato = document.createElement("tr");
-            const td = document.createElement("td");
-            td.className = "py-2 text-secondary fw-bold";
-            td.textContent = prods[sublista[i]];
-            filaPlato.append(td);
-            tbody.append(filaPlato);
+            let idProd = sublista[i];
+            const card = document.createElement("div");
+            card.className = "plato-card";
+
+            let imgProd = document.createElement("img");
+            imgProd.src = imagenesProductos[idProd]; // Ruta corregida
+            imgProd.className = "img-producto";
+            imgProd.id = idProd; // ID según pág. 50 del PDF [cite: 646]
+
+            let nombre = document.createElement("span");
+            nombre.className = "plato-nombre";
+            nombre.textContent = prods[idProd];
+
+            card.append(imgProd, nombre);
+            grid.append(card);
         }
-        tabla.append(tbody);
-        contenedor.append(tabla);
+        
+        seccion.append(grid);
+        contenedor.append(seccion);
     });
 }
 
