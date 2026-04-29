@@ -83,45 +83,46 @@ const prodsEspecialidades = ["co1", "co2", "ca1", "h1", "b5", "e3", "p1"];
 
 // Diccionarios para los botones de filtro
 const textosFiltros = {
-    es: { 
-        ocultarAlc: "Ocultar alcohol", mostrarAlc: "Mostrar alcohol",
-        verEsp: "Especialidades", verTodo: "Ver carta completa"
-    },
-    en: { 
-        ocultarAlc: "Hide alcohol", mostrarAlc: "Show alcohol",
-        verEsp: "Chef's Specials", verTodo: "Full Menu"
-    },
-    fr: { 
-        ocultarAlc: "Masquer l'alcool", mostrarAlc: "Afficher l'alcool",
-        verEsp: "Spécialités du Chef", verTodo: "Carte Complète"
-    },
-    de: { 
-        ocultarAlc: "Alkohol ausblenden", mostrarAlc: "Alkohol anzeigen",
-        verEsp: "Spezialitäten", verTodo: "Ganze Speisekarte"
-    }
+    es: { ocultarAlc: "Ocultar alcohol", mostrarAlc: "Mostrar alcohol", verEsp: "Especialidades", verTodo: "Ver carta completa" },
+    en: { ocultarAlc: "Hide alcohol", mostrarAlc: "Show alcohol", verEsp: "Chef's Specials", verTodo: "Full Menu" },
+    fr: { ocultarAlc: "Masquer l'alcool", mostrarAlc: "Afficher l'alcool", verEsp: "Spécialités du Chef", verTodo: "Carte Complète" },
+    de: { ocultarAlc: "Alkohol ausblenden", mostrarAlc: "Alkohol anzeigen", verEsp: "Spezialitäten", verTodo: "Ganze Speisekarte" }
 };
 
-// --- NUEVO PRÁCTICA 4.10: VARIABLES DE PEDIDO ---
 let pedidos = {};
 
-// Diccionarios para la tabla del pedido
 const textosCarrito = {
-    es: { titulo: "Tu Pedido", prod: "Producto", cant: "Cantidad" },
-    en: { titulo: "Your Order", prod: "Product", cant: "Quantity" },
-    fr: { titulo: "Votre Commande", prod: "Produit", cant: "Quantité" },
-    de: { titulo: "Deine Bestellung", prod: "Produkt", cant: "Menge" }
+    es: { titulo: "Tu Pedido", prod: "Producto", cant: "Cant.", accion: "Quitar", vaciar: "Vaciar Pedido" },
+    en: { titulo: "Your Order", prod: "Product", cant: "Qty", accion: "Remove", vaciar: "Clear Order" },
+    fr: { titulo: "Votre Commande", prod: "Produit", cant: "Qté", accion: "Retirer", vaciar: "Vider" },
+    de: { titulo: "Deine Bestellung", prod: "Produkt", cant: "Menge", accion: "Löschen", vaciar: "Bestellung Leeren" }
 };
 
-// Inicializa el plain object poniendo todos los IDs a 0
-function inicializarPedidos() {
-    lista_menu.forEach(sublista => {
-        // Empezamos en i=1 para no coger el prefijo (ej: "b", "e")
-        for (let i = 1; i < sublista.length; i++) {
-            pedidos[sublista[i]] = 0;
-        }
-    });
+// --- NUEVO PRÁCTICA 4.12: FUNCIÓN PARA GUARDAR EN LOCALSTORAGE ---
+function guardarPedidos() {
+    // Convertimos el objeto pedidos a un string JSON y lo guardamos
+    localStorage.setItem("pedidos_auto_gourmet", JSON.stringify(pedidos));
 }
-// ------------------------------------------------
+// -----------------------------------------------------------------
+
+// --- ACTUALIZADO PRÁCTICA 4.12: RECUPERAR DATOS AL INICIO ---
+function inicializarPedidos() {
+    // Miramos si hay datos guardados de una sesión anterior
+    const guardados = localStorage.getItem("pedidos_auto_gourmet");
+    
+    if (guardados) {
+        // Si hay datos, los convertimos de nuevo a un objeto real
+        pedidos = JSON.parse(guardados);
+    } else {
+        // Si no hay datos (primera vez que entra), inicializamos a 0
+        lista_menu.forEach(sublista => {
+            for (let i = 1; i < sublista.length; i++) {
+                pedidos[sublista[i]] = 0;
+            }
+        });
+    }
+}
+// ------------------------------------------------------------
 
 function generarCarta() {
     const contenedor = document.querySelector("#contenedor-menu");
@@ -175,12 +176,11 @@ function generarCarta() {
             nombre.className = "plato-nombre";
             nombre.textContent = prods[idProd];
 
-            // --- PRÁCTICA 4.10: EVENTO DE CLIC ---
             card.addEventListener("click", () => {
                 pedidos[idProd]++;
+                guardarPedidos(); // <-- 4.12: Guardamos tras añadir un plato
                 actualizarTablaPedidos();
             });
-            // -------------------------------------------
 
             card.append(imgProd, nombre);
             grid.append(card);
@@ -191,35 +191,34 @@ function generarCarta() {
     });
 
     actualizarTextosFiltros();
-    actualizarTablaPedidos(); // Para que el carrito también se traduzca al cambiar bandera
+    actualizarTablaPedidos(); 
 }
 
-// --- ACTUALIZADO PRÁCTICA 4.10: FUNCIÓN PARA LA TABLA (Sin thead/tbody) ---
 function actualizarTablaPedidos() {
     const zonaPedidos = document.querySelector("#zona-pedidos");
-    // Ahora seleccionamos directamente la tabla por su ID
     const tabla = document.querySelector("#tabla-pedidos");
+    const btnVaciar = document.querySelector("#btn-vaciar");
     
-    // Validamos que existan los elementos en el HTML
     if (zonaPedidos && tabla) {
         document.querySelector("#titulo-pedidos").textContent = textosCarrito[idiomaActual].titulo;
+        
+        if(btnVaciar) btnVaciar.textContent = textosCarrito[idiomaActual].vaciar;
 
         let prods = productos_es;
         if (idiomaActual === "en") prods = productos_en;
         else if (idiomaActual === "fr") prods = productos_fr;
         else if (idiomaActual === "de") prods = productos_de;
 
-        // 1. Pintamos la primera fila (los títulos) directamente en la tabla usando innerHTML
         tabla.innerHTML = `
             <tr style="color: #888;">
                 <th>${textosCarrito[idiomaActual].prod}</th>
                 <th>${textosCarrito[idiomaActual].cant}</th>
+                <th>${textosCarrito[idiomaActual].accion}</th>
             </tr>
         `;
 
         let hayPedidos = false;
 
-        // 2. Recorremos los pedidos y vamos añadiendo las filas con createElement
         for (let clave in pedidos) {
             if (pedidos[clave] > 0) {
                 hayPedidos = true;
@@ -234,14 +233,24 @@ function actualizarTablaPedidos() {
                 let tdCant = document.createElement("td");
                 tdCant.textContent = pedidos[clave];
                 tdCant.style.fontSize = "1.2rem";
+
+                let tdAccion = document.createElement("td");
+                let btnRestar = document.createElement("button");
+                btnRestar.className = "btn-restar";
+                btnRestar.textContent = "-";
                 
-                tr.append(tdNombre, tdCant);
-                // Añadimos la fila a la tabla
+                btnRestar.onclick = () => {
+                    pedidos[clave]--;
+                    guardarPedidos(); // <-- 4.12: Guardamos tras restar un plato
+                    actualizarTablaPedidos();
+                };
+                tdAccion.append(btnRestar);
+                
+                tr.append(tdNombre, tdCant, tdAccion);
                 tabla.append(tr);
             }
         }
 
-        // Mostrar u ocultar contenedor según si hay o no pedidos
         if (hayPedidos) {
             zonaPedidos.style.display = "block";
         } else {
@@ -249,7 +258,17 @@ function actualizarTablaPedidos() {
         }
     }
 }
-// --------------------------------------------------
+
+const btnVaciarObj = document.querySelector("#btn-vaciar");
+if(btnVaciarObj) {
+    btnVaciarObj.addEventListener("click", () => {
+        for (let clave in pedidos) {
+            pedidos[clave] = 0;
+        }
+        guardarPedidos(); // <-- 4.12: Guardamos tras vaciar el pedido entero
+        actualizarTablaPedidos();
+    });
+}
 
 function actualizarTextosFiltros() {
     const btnAlc = document.querySelector("#btn-alcohol");
@@ -291,6 +310,5 @@ document.querySelector("#btn-en").onclick = () => { idiomaActual = "en"; generar
 document.querySelector("#btn-fr").onclick = () => { idiomaActual = "fr"; generarCarta(); };
 document.querySelector("#btn-de").onclick = () => { idiomaActual = "de"; generarCarta(); };
 
-// --- INICIALIZAMOS LOS PEDIDOS ANTES DE GENERAR LA CARTA ---
 inicializarPedidos();
 generarCarta();
