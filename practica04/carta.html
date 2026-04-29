@@ -117,6 +117,36 @@
             color: #cccccc; 
             font-size: 1.15rem; 
         }
+
+        /* CLASE PARA OCULTAR ELEMENTOS (Práctica 4.7) */
+        .oculto { 
+            display: none !important; 
+        }
+
+        /* Estilo para los botones de filtro */
+        .filtros-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .btn-filtro {
+            background: #1a1a1a;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-filtro:hover {
+            background: #333;
+            border-color: #d4af37;
+        }
+
     </style>
     <title>Auto-Gourmet</title>
 </head>
@@ -130,9 +160,18 @@
     </div>
 
     <div class="container pb-5">
-        <h1 class="main-title">Auto - Gourmet</h1>
+        <header class="header-principal">
+            <h1 class="main-title">Auto-Gourmet</h1>
+        </header>
+
+        <div class="filtros-container">
+            <button id="btn-alcohol" class="btn-filtro"></button>
+            <button id="btn-especialidades" class="btn-filtro"></button>
+        </div>
+
         <div id="contenedor-menu"></div>
     </div>
+    
 
     <script src="carta.js"></script>
 </body>

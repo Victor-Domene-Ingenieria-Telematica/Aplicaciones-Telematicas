@@ -9,7 +9,7 @@ const lista_menu = [
     ["p", "p1", "p2", "p3"]
 ];
 
-// --- MAPEO DE IMÁGENES (Escribe aquí el nombre real de tus archivos) ---
+// --- MAPEO DE IMÁGENES ---
 const imagenesCategorias = {
     "b": "images/bebidas/Icono_bebidas.png",
     "e": "images/entrantes/Icono_entrante.png",
@@ -73,34 +73,55 @@ const productos_de = {
 
 let idiomaActual = "es";
 
+// --- PRÁCTICA 4.7: VARIABLES GLOBALES DE ESTADO ---
+let mostrandoAlcohol = true;
+let soloEspecialidades = false;
+
+// GRUPOS DE PLATOS ACTUALIZADOS
+const prodsAlcohol = ["b4", "b5"]; 
+// Se han añadido b5 (vino), e3 (croquetas) y p1 (tarta de queso)
+const prodsEspecialidades = ["co1", "co2", "ca1", "h1", "b5", "e3", "p1"]; 
+
+// Diccionarios para los botones de filtro
+const textosFiltros = {
+    es: { 
+        ocultarAlc: "Ocultar alcohol", mostrarAlc: "Mostrar alcohol",
+        verEsp: "Especialidades", verTodo: "Ver carta completa"
+    },
+    en: { 
+        ocultarAlc: "Hide alcohol", mostrarAlc: "Show alcohol",
+        verEsp: "Chef's Specials", verTodo: "Full Menu"
+    },
+    fr: { 
+        ocultarAlc: "Masquer l'alcool", mostrarAlc: "Afficher l'alcool",
+        verEsp: "Spécialités du Chef", verTodo: "Carte Complète"
+    },
+    de: { 
+        ocultarAlc: "Alkohol ausblenden", mostrarAlc: "Alkohol anzeigen",
+        verEsp: "Spezialitäten", verTodo: "Ganze Speisekarte"
+    }
+};
+
 function generarCarta() {
     const contenedor = document.querySelector("#contenedor-menu");
     contenedor.innerHTML = ""; 
 
-    // Lógica para seleccionar el idioma
     let cats, prods;
-    if (idiomaActual === "es") {
-        cats = categorias_es; prods = productos_es;
-    } else if (idiomaActual === "en") {
-        cats = categorias_en; prods = productos_en;
-    } else if (idiomaActual === "fr") {
-        cats = categorias_fr; prods = productos_fr;
-    } else if (idiomaActual === "de") {
-        cats = categorias_de; prods = productos_de;
-    } 
+    if (idiomaActual === "es") { cats = categorias_es; prods = productos_es; }
+    else if (idiomaActual === "en") { cats = categorias_en; prods = productos_en; }
+    else if (idiomaActual === "fr") { cats = categorias_fr; prods = productos_fr; }
+    else if (idiomaActual === "de") { cats = categorias_de; prods = productos_de; } 
 
     lista_menu.forEach(sublista => {
-        // Creamos la SECCIÓN de la categoría (reemplaza a la tabla)
         const seccion = document.createElement("div");
         seccion.className = "categoria-seccion";
 
-        // CABECERA DE CATEGORÍA
         const header = document.createElement("div");
         header.className = "categoria-header";
         
         let codCat = sublista[0];
         let imgCat = document.createElement("img");
-        imgCat.src = imagenesCategorias[codCat]; // Ruta corregida
+        imgCat.src = imagenesCategorias[codCat]; 
         imgCat.className = "img-categoria";
         
         let titulo = document.createElement("h2");
@@ -110,7 +131,6 @@ function generarCarta() {
         header.append(imgCat, titulo);
         seccion.append(header);
 
-        // GRID DE PLATOS
         const grid = document.createElement("div");
         grid.className = "platos-grid";
 
@@ -119,10 +139,16 @@ function generarCarta() {
             const card = document.createElement("div");
             card.className = "plato-card";
 
+            if (prodsAlcohol.includes(idProd)) card.classList.add("item-alcohol");
+            if (!prodsEspecialidades.includes(idProd)) card.classList.add("item-normal");
+
+            if (!mostrandoAlcohol && prodsAlcohol.includes(idProd)) card.classList.add("oculto");
+            if (soloEspecialidades && !prodsEspecialidades.includes(idProd)) card.classList.add("oculto");
+
             let imgProd = document.createElement("img");
-            imgProd.src = imagenesProductos[idProd]; // Ruta corregida
+            imgProd.src = imagenesProductos[idProd]; 
             imgProd.className = "img-producto";
-            imgProd.id = idProd; // ID según pág. 50 del PDF [cite: 646]
+            imgProd.id = idProd;
 
             let nombre = document.createElement("span");
             nombre.className = "plato-nombre";
@@ -135,9 +161,45 @@ function generarCarta() {
         seccion.append(grid);
         contenedor.append(seccion);
     });
+
+    actualizarTextosFiltros();
 }
 
-// Eventos de los botones
+function actualizarTextosFiltros() {
+    const btnAlc = document.querySelector("#btn-alcohol");
+    const btnEsp = document.querySelector("#btn-especialidades");
+
+    if (btnAlc && btnEsp) {
+        btnAlc.textContent = mostrandoAlcohol ? textosFiltros[idiomaActual].ocultarAlc : textosFiltros[idiomaActual].mostrarAlc;
+        btnEsp.textContent = soloEspecialidades ? textosFiltros[idiomaActual].verTodo : textosFiltros[idiomaActual].verEsp;
+    }
+}
+
+function toggleFiltro(tipo) {
+    let selector;
+    
+    if (tipo === 'alcohol') {
+        mostrandoAlcohol = !mostrandoAlcohol;
+        selector = ".item-alcohol";
+    } else {
+        soloEspecialidades = !soloEspecialidades;
+        selector = ".item-normal"; 
+    }
+
+    let elementos = document.querySelectorAll(selector);
+    for (let el of elementos) {
+        el.classList.toggle("oculto");
+    }
+
+    actualizarTextosFiltros();
+}
+
+const btnAlcohol = document.querySelector("#btn-alcohol");
+if(btnAlcohol) btnAlcohol.addEventListener("click", () => toggleFiltro('alcohol'));
+
+const btnEspecialidades = document.querySelector("#btn-especialidades");
+if(btnEspecialidades) btnEspecialidades.addEventListener("click", () => toggleFiltro('especialidades'));
+
 document.querySelector("#btn-es").onclick = () => { idiomaActual = "es"; generarCarta(); };
 document.querySelector("#btn-en").onclick = () => { idiomaActual = "en"; generarCarta(); };
 document.querySelector("#btn-fr").onclick = () => { idiomaActual = "fr"; generarCarta(); };
