@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es-ES">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <title>Práctica 2.10. Landing Page Freelance</title>
+</head>
+<body>
+
+    <!-- Cabecera -->
+    <div class="container-fluid bg-dark text-white text-center py-5">
+        <div class="container py-5">
+            <h1 class="display-4">Hola, soy Víctor Domene, Desarrollador Web</h1>
+            <p class="lead">Soluciones a medida para tu negocio. Diseño responsive, moderno y eficiente.</p>
+            <a href="#servicios" class="btn btn-primary btn-lg mt-3">Ver mis servicios</a>
+            <a href="#contacto" class="btn btn-outline-light btn-lg mt-3 ms-2">Contactar</a>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+
+        <!-- Seccion de servicios -->
+        <div id="servicios" class="mb-5">
+            <h2 class="text-center mb-4">¿Qué te ofrezco?</h2>
+            <div class="row">
+                
+                <!-- Tarjeta 1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="images/servicio1.jpeg" class="card-img-top" alt="Diseño de páginas web">
+                        <div class="card-body">
+                            <h4 class="card-title">Diseño Web</h4>
+                            <p class="card-text">Páginas web atractivas y funcionales</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 2 -->
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="images/servicio2.jpeg" class="card-img-top" alt="Adaptación a móviles">
+                        <div class="card-body">
+                            <h4 class="card-title">Diseño Responsive</h4>
+                            <p class="card-text">Tu web se verá perfecta en cualquier dispositivo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 3 -->
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="images/servicio3.jpeg" class="card-img-top" alt="Mantenimiento web">
+                        <div class="card-body">
+                            <h4 class="card-title">Mantenimiento</h4>
+                            <p class="card-text">Me encargo de que todo siga funcionando</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Seccion de carousel -->
+        <div id="portfolio" class="mb-5">
+            <h2 class="text-center mb-4">Un vistazo a mis hobbies y mi familia</h2>
+            
+            <div id="carrusel01" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carrusel01" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#carrusel01" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#carrusel01" data-bs-slide-to="2"></button>
+                    <button type="button" data-bs-target="#carrusel01" data-bs-slide-to="3"></button>
+                    <button type="button" data-bs-target="#carrusel01" data-bs-slide-to="4"></button>
+                </div>
+
+                <!-- Fotos -->
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="images/1.jpeg" alt="Coche de Fernando Alonso" class="d-block w-100">
+                        <div class="carousel-caption">
+                            <h3>El mejor coche de Fernando Alonso</h3>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="images/2.jpeg" alt="Visitando Gijon" class="d-block w-100">
+                        <div class="carousel-caption">
+                            <h3>Visitando Gijon</h3>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="images/3.jpeg" alt="Dia 3 del viaje en Asturias" class="d-block w-100">
+                        <div class="carousel-caption">
+                            <h3>Dia 3 del viaje en Asturias</h3>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="images/4.jpeg" alt="Con mi hermano por el puerto" class="d-block w-100">
+                        <div class="carousel-caption">
+                            <h3>Con mi hermano dando una vuelta por el puerto</h3>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="images/5.jpeg" alt="Tomando una sidra" class="d-block w-100">
+                        <div class="carousel-caption">
+                            <h3>Tomando una sidra antes del cachopo</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones izquierda y derecha -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#carrusel01" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carrusel01" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="container-fluid bg-light py-4 text-center mt-5" id="contacto">
+        <p class="text-muted mb-0">Contacto: vdomeneconcejal@gmail.com | Teléfono: 666 66 66 66</p>
+    </div>
+
+</body>
+</html>
