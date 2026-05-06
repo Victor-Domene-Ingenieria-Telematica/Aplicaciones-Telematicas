@@ -92,10 +92,10 @@ const textosFiltros = {
 let pedidos = {};
 
 const textosCarrito = {
-    es: { titulo: "Tu Pedido", prod: "Producto", cant: "Cant.", accion: "Quitar", vaciar: "Vaciar Pedido" },
-    en: { titulo: "Your Order", prod: "Product", cant: "Qty", accion: "Remove", vaciar: "Clear Order" },
-    fr: { titulo: "Votre Commande", prod: "Produit", cant: "Qté", accion: "Retirer", vaciar: "Vider" },
-    de: { titulo: "Deine Bestellung", prod: "Produkt", cant: "Menge", accion: "Löschen", vaciar: "Bestellung Leeren" }
+    es: { titulo: "Pedido", prod: "Producto", cant: "Cant.", accion: "Quitar", vaciar: "Vaciar Pedido" },
+    en: { titulo: "Order", prod: "Product", cant: "Qty", accion: "Remove", vaciar: "Clear Order" },
+    fr: { titulo: "Commande", prod: "Produit", cant: "Qté", accion: "Retirer", vaciar: "Vider" },
+    de: { titulo: "Bestellung", prod: "Produkt", cant: "Menge", accion: "Löschen", vaciar: "Bestellung Leeren" }
 };
 
 // --- NUEVO PRÁCTICA 4.12: FUNCIÓN PARA GUARDAR EN LOCALSTORAGE ---
