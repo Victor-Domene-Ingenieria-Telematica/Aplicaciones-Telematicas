@@ -9,7 +9,6 @@ const lista_menu = [
     ["p", "p1", "p2", "p3"]
 ];
 
-// --- MAPEO DE IMÁGENES ---
 const imagenesCategorias = {
     "b": "images/bebidas/Icono_bebidas.png",
     "e": "images/entrantes/Icono_entrante.png",
@@ -28,13 +27,11 @@ const imagenesProductos = {
     "p1": "images/postres/tarta_queso_ahumada.png", "p2": "images/postres/coulant.png", "p3": "images/postres/fruta.png"
 };
 
-// --- OBJETOS INDEPENDIENTES DE CATEGORÍAS ---
 const categorias_es = { "b": "BEBIDAS", "e": "ENTRANTES", "co": "CORTES GOURMET", "h": "HAMBURGUESAS", "ca": "CACHOPOS", "p": "POSTRES" };
 const categorias_en = { "b": "DRINKS", "e": "STARTERS", "co": "GOURMET CUTS", "h": "BURGERS", "ca": "CACHOPOS", "p": "DESSERTS" };
 const categorias_fr = { "b": "BOISSONS", "e": "ENTRÉES", "co": "VIANDES GOURMET", "h": "HAMBURGERS", "ca": "CACHOPOS", "p": "DESSERTS" };
 const categorias_de = { "b": "GETRÄNKE", "e": "VORSPEISEN", "co": "GOURMET-FLEISCH", "h": "BURGERS", "ca": "CACHOPOS", "p": "NACHSPEISEN" };
 
-// --- OBJETOS INDEPENDIENTES DE PRODUCTOS ---
 const productos_es = {
     "b1": 'Agua Mineral', "b2": 'Coca Cola', "b3": 'Fanta Naranja', "b4": 'Cerveza de Grifo', "b5": 'Copa de Vino Tinto',
     "e1": 'Carpaccio de buey', "e2": 'Chorizo a la olla', "e3": 'Croquetas de chuleton', "e4": 'Huevos rotos trufados',
@@ -71,13 +68,12 @@ const productos_de = {
     "p1": 'Geräucherter Käsekuchen', "p2": 'Schokoladen-Coulant', "p3": 'Obst der Saison'
 };
 
-let idiomaActual = "es";
+// Miramos si hay un idioma guardado. Si no hay nada (null), ponemos "es" por defecto.
+let idiomaActual = localStorage.getItem("idioma_auto_gourmet") || "es";
 
-// --- PRÁCTICA 4.7: VARIABLES GLOBALES DE ESTADO ---
 let mostrandoAlcohol = true;
 let soloEspecialidades = false;
 
-// GRUPOS DE PLATOS
 const prodsAlcohol = ["b4", "b5"]; 
 const prodsEspecialidades = ["co1", "co2", "ca1", "h1", "b5", "e3", "p1"]; 
 
@@ -92,72 +88,96 @@ const textosFiltros = {
 let pedidos = {};
 
 const textosCarrito = {
-    es: { titulo: "Pedido", prod: "Producto", cant: "Cant.", accion: "Quitar", vaciar: "Vaciar Pedido" },
-    en: { titulo: "Order", prod: "Product", cant: "Qty", accion: "Remove", vaciar: "Clear Order" },
-    fr: { titulo: "Commande", prod: "Produit", cant: "Qté", accion: "Retirer", vaciar: "Vider" },
-    de: { titulo: "Bestellung", prod: "Produkt", cant: "Menge", accion: "Löschen", vaciar: "Bestellung Leeren" }
+    es: { titulo: "PEDIDO", prod: "Producto", cant: "Cant.", accion: "Quitar", vaciar: "VACIAR PEDIDO" },
+    en: { titulo: "ORDER", prod: "Product", cant: "Qty", accion: "Remove", vaciar: "CLEAR ORDER" },
+    fr: { titulo: "COMMANDE", prod: "Produit", cant: "Qté", accion: "Retirer", vaciar: "VIDER" },
+    de: { titulo: "BESTELLUNG", prod: "Produkt", cant: "Menge", accion: "Löschen", vaciar: "BESTELLUNG LEEREN" }
 };
 
-// --- NUEVO PRÁCTICA 4.12: FUNCIÓN PARA GUARDAR EN LOCALSTORAGE ---
+// Funcion para guardar en LocalStorage
 function guardarPedidos() {
     // Convertimos el objeto pedidos a un string JSON y lo guardamos
     localStorage.setItem("pedidos_auto_gourmet", JSON.stringify(pedidos));
 }
-// -----------------------------------------------------------------
 
-// --- ACTUALIZADO PRÁCTICA 4.12: RECUPERAR DATOS AL INICIO ---
+// Funcion para recuperar los datos del inicio
 function inicializarPedidos() {
     // Miramos si hay datos guardados de una sesión anterior
-    const guardados = localStorage.getItem("pedidos_auto_gourmet");
+    let guardados = localStorage.getItem("pedidos_auto_gourmet");
     
     if (guardados) {
         // Si hay datos, los convertimos de nuevo a un objeto real
         pedidos = JSON.parse(guardados);
     } else {
         // Si no hay datos (primera vez que entra), inicializamos a 0
-        lista_menu.forEach(sublista => {
+        // Usamos el bucle for...of como acordamos para evitar la función flecha
+        for (let sublista of lista_menu) {
             for (let i = 1; i < sublista.length; i++) {
                 pedidos[sublista[i]] = 0;
             }
-        });
+        }
     }
 }
-// ------------------------------------------------------------
 
 function generarCarta() {
+    // buscamos donde inyectar la carta en el HTML
     const contenedor = document.querySelector("#contenedor-menu");
+
+    // Cada vez que cambiemos de idioma borramos todos los platos del idioma anterior
     contenedor.innerHTML = ""; 
 
+    // Vemos que idioma tenemos
     let cats, prods;
-    if (idiomaActual === "es") { cats = categorias_es; prods = productos_es; }
-    else if (idiomaActual === "en") { cats = categorias_en; prods = productos_en; }
-    else if (idiomaActual === "fr") { cats = categorias_fr; prods = productos_fr; }
-    else if (idiomaActual === "de") { cats = categorias_de; prods = productos_de; } 
+    if(idiomaActual === "es") { 
+        cats = categorias_es;
+        prods = productos_es;
+    } else if(idiomaActual === "en") {
+        cats = categorias_en;
+        prods = productos_en;
+    } else if(idiomaActual === "fr") {
+        cats = categorias_fr;
+        prods = productos_fr;
+    } else if(idiomaActual === "de") {
+        cats = categorias_de;
+        prods = productos_de;
+    } 
 
-    lista_menu.forEach(sublista => {
-        const seccion = document.createElement("div");
+    for(let sublista of lista_menu) {
+        // Creamos un div por cada sublista de secciones dentro del menu
+        let seccion = document.createElement("div");
+        // le aplicamos la clase categoria-secciom
         seccion.className = "categoria-seccion";
 
-        const header = document.createElement("div");
+        // Creamos un div por cada sublista de headers dentro del menu
+        let header = document.createElement("div");
+        // le aplicamos la clase categoria-header
         header.className = "categoria-header";
         
+        // Sacamos la letra de la categoría (que siempre es el primer elemento, posicion 0)
         let codCat = sublista[0];
+        // Creamos una etiqueta de imagen HTML <img>
         let imgCat = document.createElement("img");
-        imgCat.src = imagenesCategorias[codCat]; 
+        // Le decimos de donde sacar la foto buscando la letra en el diccionario
+        imgCat.src = imagenesCategorias[codCat];
+        // Le ponemos su clase CSS para que se vea del tamaño correcto 
         imgCat.className = "img-categoria";
         
+        // Creamos una etiqueta de título (<h2>)
         let titulo = document.createElement("h2");
+        // Le ponemos la clase CSS 
         titulo.className = "categoria-titulo";
+        // Buscamos el nombre de la categoría en el idioma actual
         titulo.textContent = cats[codCat];
 
+        // Metemos el icono y el texto dentro de la cabecera (la franja negra)
         header.append(imgCat, titulo);
+        // Metemos esa cabecera completa dentro de la seccion de la categoría
         seccion.append(header);
 
         const grid = document.createElement("div");
         grid.className = "platos-grid";
 
-        for (let i = 1; i < sublista.length; i++) {
-            let idProd = sublista[i];
+        for (let idProd of sublista.slice(1)) {
             const card = document.createElement("div");
             card.className = "plato-card";
 
@@ -176,9 +196,10 @@ function generarCarta() {
             nombre.className = "plato-nombre";
             nombre.textContent = prods[idProd];
 
-            card.addEventListener("click", () => {
+            // Reemplazamos la flecha por 'function()'
+            card.addEventListener("click", function() {
                 pedidos[idProd]++;
-                guardarPedidos(); // <-- 4.12: Guardamos tras añadir un plato
+                guardarPedidos(); 
                 actualizarTablaPedidos();
             });
 
@@ -188,7 +209,7 @@ function generarCarta() {
         
         seccion.append(grid);
         contenedor.append(seccion);
-    });
+    }
 
     actualizarTextosFiltros();
     actualizarTablaPedidos(); 
@@ -209,8 +230,9 @@ function actualizarTablaPedidos() {
         else if (idiomaActual === "fr") prods = productos_fr;
         else if (idiomaActual === "de") prods = productos_de;
 
+        // Limpiamos el 'style' inline y le ponemos la clase nueva
         tabla.innerHTML = `
-            <tr style="color: #888;">
+            <tr class="cabecera-tabla">
                 <th>${textosCarrito[idiomaActual].prod}</th>
                 <th>${textosCarrito[idiomaActual].cant}</th>
                 <th>${textosCarrito[idiomaActual].accion}</th>
@@ -227,21 +249,20 @@ function actualizarTablaPedidos() {
                 
                 let tdNombre = document.createElement("td");
                 tdNombre.textContent = prods[clave];
-                tdNombre.style.fontWeight = "bold";
-                tdNombre.style.color = "#ccc";
+                tdNombre.className = "nombre-pedido"; // Asignamos clase CSS
                 
                 let tdCant = document.createElement("td");
                 tdCant.textContent = pedidos[clave];
-                tdCant.style.fontSize = "1.2rem";
+                tdCant.className = "cantidad-pedido"; // Asignamos clase CSS
 
                 let tdAccion = document.createElement("td");
                 let btnRestar = document.createElement("button");
                 btnRestar.className = "btn-restar";
                 btnRestar.textContent = "-";
                 
-                btnRestar.onclick = () => {
+                btnRestar.onclick = function() {
                     pedidos[clave]--;
-                    guardarPedidos(); // <-- 4.12: Guardamos tras restar un plato
+                    guardarPedidos(); 
                     actualizarTablaPedidos();
                 };
                 tdAccion.append(btnRestar);
@@ -251,21 +272,23 @@ function actualizarTablaPedidos() {
             }
         }
 
+        // Usamos tu clase .oculto en lugar de modificar el style.display
         if (hayPedidos) {
-            zonaPedidos.style.display = "block";
+            zonaPedidos.classList.remove("oculto");
         } else {
-            zonaPedidos.style.display = "none";
+            zonaPedidos.classList.add("oculto");
         }
     }
 }
 
 const btnVaciarObj = document.querySelector("#btn-vaciar");
 if(btnVaciarObj) {
-    btnVaciarObj.addEventListener("click", () => {
+    // Reemplazamos la flecha por 'function()'
+    btnVaciarObj.addEventListener("click", function() {
         for (let clave in pedidos) {
             pedidos[clave] = 0;
         }
-        guardarPedidos(); // <-- 4.12: Guardamos tras vaciar el pedido entero
+        guardarPedidos(); 
         actualizarTablaPedidos();
     });
 }
@@ -300,15 +323,24 @@ function toggleFiltro(tipo) {
 }
 
 const btnAlcohol = document.querySelector("#btn-alcohol");
-if(btnAlcohol) btnAlcohol.addEventListener("click", () => toggleFiltro('alcohol'));
+// Reemplazamos la flecha por 'function()'
+if(btnAlcohol) btnAlcohol.addEventListener("click", function() { toggleFiltro('alcohol'); });
 
 const btnEspecialidades = document.querySelector("#btn-especialidades");
-if(btnEspecialidades) btnEspecialidades.addEventListener("click", () => toggleFiltro('especialidades'));
+// Reemplazamos la flecha por 'function()'
+if(btnEspecialidades) btnEspecialidades.addEventListener("click", function() { toggleFiltro('especialidades'); });
 
-document.querySelector("#btn-es").onclick = () => { idiomaActual = "es"; generarCarta(); };
-document.querySelector("#btn-en").onclick = () => { idiomaActual = "en"; generarCarta(); };
-document.querySelector("#btn-fr").onclick = () => { idiomaActual = "fr"; generarCarta(); };
-document.querySelector("#btn-de").onclick = () => { idiomaActual = "de"; generarCarta(); };
+function cambiarIdioma(nuevoIdioma) {
+    idiomaActual = nuevoIdioma;
+    localStorage.setItem("idioma_auto_gourmet", idiomaActual); 
+    generarCarta();                                            
+}
+
+// Reemplazamos la flecha por 'function()'
+document.querySelector("#btn-es").onclick = function() { cambiarIdioma("es"); };
+document.querySelector("#btn-en").onclick = function() { cambiarIdioma("en"); };
+document.querySelector("#btn-fr").onclick = function() { cambiarIdioma("fr"); };
+document.querySelector("#btn-de").onclick = function() { cambiarIdioma("de"); };
 
 inicializarPedidos();
 generarCarta();

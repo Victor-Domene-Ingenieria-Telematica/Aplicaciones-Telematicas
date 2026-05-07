@@ -5,159 +5,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Fondo con un ligero degradado */
+        /* Fondo con degradado */
         body { 
-            background: linear-gradient(180deg, #7e7e7e 20%, #121212 100%);
+            background-image: url('images/fondo2.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             font-family: Helvetica;
         }
         
+        /* Contenedor fijo para las banderas de idiomas */
         .idiomas-container { 
             position: fixed; 
             top: 30px; 
             right: 30px; 
         }
         
+        /* Botones de idiomas transparentes */
         .btn-flag { 
             background: transparent; 
-            border-radius: 50%;   
+            border-radius: 10px;   
         }
         
-        /* TÍTULO PRINCIPAL */
+        /* Título principal alineado a la izquierda */
         .main-title { 
-            font-size: 7rem; 
-            font-weight: 600; 
-            text-align: left;
-            text-transform: uppercase; 
-            margin-top: 60px; 
-            margin-bottom: 50px;
+            color: #ffffff;
+            font-size: 9rem; 
+            font-weight: bold; 
+            text-align: left; 
+            margin: 60px;
+            text-shadow: 10px 10px 5px rgba(0, 0, 0, 0.8);
         }
         
-        /* SECCIÓN DE CATEGORÍA */
+        /* Tarjetas que agrupan cada categoría de comida */
         .categoria-seccion { 
-            background: #1a1a1a; 
-            border-radius: 25px; 
-            padding: 0; 
-            margin-bottom: 60px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
-            overflow: hidden; 
-            border: 1px solid #333;
+            border-radius: 50px; 
+            margin-bottom: 60px;  
+            overflow: hidden;  /* para que no salgan los picos */
+            margin: 20px;
         }
 
+        /* Cabecera negra de cada categoría */
         .categoria-header {
             background: #000; 
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 30px;
-            gap: 20px;
+            padding: 10px;
         }
         
+        /* Icono de la categoría */
         .img-categoria { 
-            width: 100px !important; 
-            height: 100px !important; 
-            object-fit: contain; 
-            border-radius: 15px; 
+            width: 200px; 
+            height: 200px; 
         }
 
+        /* Título de la categoría */
         .categoria-titulo { 
-            font-size: 2.5rem; 
-            font-weight: 800; 
+            font-size: 3rem; 
+            font-weight: bold; 
             color: #ffffff; 
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 3px;
         }
 
-        /* GRID DE PLATOS */
+        /* Cuadrícula para los platos */
         .platos-grid { 
-            padding: 30px;
+            padding: 80px;
             background: #1a1a1a; 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
             gap: 20px; 
         }
 
+        /* Tarjeta individual de cada plato */
         .plato-card { 
             background: #2d2d2d; 
-            border: 1px solid #444;
-            color: white;
-            /* Alineamos foto y texto perfectamente */
             display: flex; 
             align-items: center; 
-            padding: 15px; 
-            border-radius: 12px;
+            padding: 20px; 
+            border-radius: 20px;
         }
-        
-        .plato-nombre { color: #ffffff; }
 
+        /* Efecto al pasar el ratón por encima del plato */
         .plato-card:hover { 
-            transform: scale(1.05); 
-            border-color: #0984e3; 
-            box-shadow: 0 15px 30px rgba(9, 132, 227, 0.15);
-            cursor: pointer; 
+            box-shadow: 0 15px 30px #bababa;
+            background: #545454; 
         }
         
+        /* Imagen del plato */
         .img-producto { 
-            width: 85px !important; 
-            height: 85px !important; 
-            object-fit: cover; 
-            margin-right: 20px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            width: auto; 
+            height: 80px; 
+            border-radius: 20px;
         }
 
+        /* Nombre del plato */
         .plato-nombre { 
-            font-weight: 600; 
-            color: #cccccc; 
-            font-size: 1.15rem; 
+            font-weight: bold; 
+            color: #acacac; 
+            font-size: 1.2rem;
+            text-align: center;
+            width: 100%; 
         }
 
-        .oculto { display: none !important; }
+        /* Clase para ocultar platos con JavaScript */
+        .oculto {
+            display: none;
+        }
 
+        /* Contenedor de los botones de filtrado alineado a la izquierda */
         .filtros-container {
             display: flex;
-            justify-content: flex-start; /* <-- Cambiado a flex-start */
-            gap: 15px;
-            margin-bottom: 40px;
+            gap: 20px;
+            margin: 40px;
         }
 
+        /* Botón de filtro por defecto */
         .btn-filtro {
-            background: #1a1a1a;
+            background: #000000;
             color: #fff;
-            border: 1px solid #444;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 20px;
+            font-weight: bold;
         }
 
         .btn-filtro:hover {
-            background: #333;
-            border-color: #d4af37;
+            background: #4e4e4e;
         }
 
-        /* --- ESTILOS DE LA TABLA DE PEDIDOS Y BOTONES NUEVOS --- */
+        /* Contenedor del carrito */
         #zona-pedidos { 
-            padding: 30px; 
-            background: #111; 
-            position: sticky; 
-            top: 100px; 
+            padding: 20px; 
+            background: #000000; 
+            position: sticky; /* para que baje al hacer scroll */
+            top: 75px; 
         }
-        .table-dark { background-color: transparent; }
 
-        /* Botón de restar unidad */
-        .btn-restar { background: #dc3545; color: white; border: none; border-radius: 5px; padding: 2px 10px; font-weight: bold; transition: 0.2s; }
-        .btn-restar:hover { background: #c82333; transform: scale(1.1); }
+        /* Botón de restar unidad (-) */
+        .btn-restar { 
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            margin: 10px;
+        }
+
+        .btn-restar:hover {
+            background: #c82333;
+        }
         
-        /* Botón de vaciar carrito entero */
-        .btn-vaciar { width: 100%; margin-top: 15px; background: #dc3545; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; transition: 0.3s; text-transform: uppercase; letter-spacing: 2px; }
-        .btn-vaciar:hover { background: #c82333; }
+        /* Botón rojo de vaciar carrito */
+        .btn-vaciar {
+            width: 100%;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .btn-vaciar:hover {
+            background: #c82333;
+        }
+
+        .cabecera-tabla {
+            color: #888;
+        }
+
+        .nombre-pedido {
+            font-weight: bold; 
+            color: #ccc;
+        }
+
+        .cantidad-pedido {
+            font-size: 1.2rem;
+        }
 
     </style>
     <title>Auto-Gourmet</title>
 </head>
 <body>
-
+    <!-- contenedor de las banderas para los idiomas -->
     <div class="idiomas-container">
         <button id="btn-es" class="btn-flag">🇪🇸</button>
         <button id="btn-en" class="btn-flag">🇬🇧</button>
@@ -165,9 +192,10 @@
         <button id="btn-de" class="btn-flag">🇩🇪</button>
     </div>
 
-    <div class="container-fluid px-lg-5 pb-5">
+    <!--Contenedor principal de toda la pagina-->
+    <div class="container-fluid">
         <header>
-            <h1 class="main-title">Auto-Gourmet</h1>
+            <h1 class="main-title">AUTO-GOURMET</h1>
         </header>
 
         <div class="filtros-container">
@@ -182,10 +210,10 @@
             </div>
 
             <div class="col-lg-4">
-                <div id="zona-pedidos" class="categoria-seccion" style="display: none;">
-                    <h2 id="titulo-pedidos" class="categoria-titulo mb-4 text-center"></h2>
-                    <div class="px-4 pb-2">
-                        <table id="tabla-pedidos" class="table table-dark table-hover text-center align-middle">
+                <div id="zona-pedidos" class="categoria-seccion">
+                    <h2 id="titulo-pedidos" class="categoria-titulo text-center"></h2>
+                    <div>
+                        <table id="tabla-pedidos" class="table table-dark">
                         </table>
                         
                         <button id="btn-vaciar" class="btn-vaciar"></button>
