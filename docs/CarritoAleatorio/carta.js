@@ -79,10 +79,10 @@ const prodsEspecialidades = ["co1", "co2", "ca1", "h1", "b5", "b1", "e3", "p1"];
 
 // Diccionarios para los botones de filtro
 const textosFiltros = {
-    es: { ocultarAlc: "Ocultar alcohol", mostrarAlc: "Mostrar alcohol", verEsp: "Especialidades", verTodo: "Ver carta completa" },
-    en: { ocultarAlc: "Hide alcohol", mostrarAlc: "Show alcohol", verEsp: "Chef's Specials", verTodo: "Full Menu" },
-    fr: { ocultarAlc: "Masquer l'alcool", mostrarAlc: "Afficher l'alcool", verEsp: "Spécialités du Chef", verTodo: "Carte Complète" },
-    de: { ocultarAlc: "Alkohol ausblenden", mostrarAlc: "Alkohol anzeigen", verEsp: "Spezialitäten", verTodo: "Ganze Speisekarte" }
+    es: { ocultarAlc: "Ocultar alcohol", mostrarAlc: "Mostrar alcohol", verEsp: "Especialidades", verTodo: "Ver carta completa", sorpresa: "SORPRÉNDEME" },
+    en: { ocultarAlc: "Hide alcohol", mostrarAlc: "Show alcohol", verEsp: "Chef's Specials", verTodo: "Full Menu", sorpresa: "SURPRISE ME" },
+    fr: { ocultarAlc: "Masquer l'alcool", mostrarAlc: "Afficher l'alcool", verEsp: "Spécialités", verTodo: "Carte Complète", sorpresa: "SURPRENEZ-MOI" },
+    de: { ocultarAlc: "Alkohol ausblenden", mostrarAlc: "Alkohol anzeigen", verEsp: "Spezialitäten", verTodo: "Ganze Speisekarte", sorpresa: "ÜBERRASCH MICH" }
 };
 
 let pedidos = {};
@@ -307,8 +307,9 @@ if(btnVaciarObj) {
 function actualizarTextosFiltros() {
     const btnAlc = document.querySelector("#btn-alcohol");
     const btnEsp = document.querySelector("#btn-especialidades");
+    const btnSor = document.querySelector("#btn-sorpresa");
 
-    if(btnAlc && btnEsp) {
+    if(btnAlc && btnEsp && btnSor) {
         
         // Botón de Alcohol
         if(mostrandoAlcohol === true)
@@ -321,6 +322,9 @@ function actualizarTextosFiltros() {
             btnEsp.textContent = textosFiltros[idiomaActual].verTodo;
         else
             btnEsp.textContent = textosFiltros[idiomaActual].verEsp;
+
+        // Texto para el botón Sorpresa (aquí no hay if, siempre es el mismo texto)
+        btnSor.textContent = textosFiltros[idiomaActual].sorpresa;
         
     }
 }
@@ -369,6 +373,37 @@ function cambiarIdioma(nuevoIdioma) {
     idiomaActual = nuevoIdioma;
     localStorage.setItem("idioma_auto_gourmet", idiomaActual); 
     generarCarta();                                            
+}
+
+const btnSorpresa = document.querySelector("#btn-sorpresa");
+
+if (btnSorpresa) {
+    btnSorpresa.addEventListener("click", function() {
+        
+        // Creamos una lista vacía para meter todos los códigos de platos (b1, e1, etc.)
+        let todosLosIds = [];
+
+        // Recorremos tu lista_menu para sacar los platos
+        for (let sublista of lista_menu) {
+            // Usamos slice(1) para saltarnos la letra de la categoría (b, e, co...)
+            for (let id of sublista.slice(1)) {
+                todosLosIds.push(id);
+            }
+        }
+
+        // Elegimos un número al azar entre 0 y el total de platos que hemos encontrado
+        let indiceAzar = Math.floor(Math.random() * todosLosIds.length);
+        
+        // Sacamos el ID que esté en esa posición
+        let idElegido = todosLosIds[indiceAzar];
+
+        // Lo añadimos al carrito como si hubiéramos hecho click normal
+        pedidos[idElegido]++;
+        
+        // Guardamos y actualizamos
+        guardarPedidos();
+        actualizarTablaPedidos();
+    });
 }
 
 // Reemplazamos la flecha por 'function()'

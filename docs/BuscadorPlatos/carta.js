@@ -79,10 +79,10 @@ const prodsEspecialidades = ["co1", "co2", "ca1", "h1", "b5", "b1", "e3", "p1"];
 
 // Diccionarios para los botones de filtro
 const textosFiltros = {
-    es: { ocultarAlc: "Ocultar alcohol", mostrarAlc: "Mostrar alcohol", verEsp: "Especialidades", verTodo: "Ver carta completa" },
-    en: { ocultarAlc: "Hide alcohol", mostrarAlc: "Show alcohol", verEsp: "Chef's Specials", verTodo: "Full Menu" },
-    fr: { ocultarAlc: "Masquer l'alcool", mostrarAlc: "Afficher l'alcool", verEsp: "Spécialités du Chef", verTodo: "Carte Complète" },
-    de: { ocultarAlc: "Alkohol ausblenden", mostrarAlc: "Alkohol anzeigen", verEsp: "Spezialitäten", verTodo: "Ganze Speisekarte" }
+    es: { ocultarAlc: "Ocultar alcohol", mostrarAlc: "Mostrar alcohol", verEsp: "Especialidades", verTodo: "Ver carta completa", buscar: "Buscar plato..." },
+    en: { ocultarAlc: "Hide alcohol", mostrarAlc: "Show alcohol", verEsp: "Chef's Specials", verTodo: "Full Menu", buscar: "Search dish..." },
+    fr: { ocultarAlc: "Masquer l'alcool", mostrarAlc: "Afficher l'alcool", verEsp: "Spécialités", verTodo: "Carte Complète", buscar: "Chercher un plat..." },
+    de: { ocultarAlc: "Alkohol ausblenden", mostrarAlc: "Alkohol anzeigen", verEsp: "Spezialitäten", verTodo: "Ganze Speisekarte", buscar: "Gericht suchen..." }
 };
 
 let pedidos = {};
@@ -307,6 +307,7 @@ if(btnVaciarObj) {
 function actualizarTextosFiltros() {
     const btnAlc = document.querySelector("#btn-alcohol");
     const btnEsp = document.querySelector("#btn-especialidades");
+    const cajaBuscador = document.querySelector("#buscador");
 
     if(btnAlc && btnEsp) {
         
@@ -321,6 +322,9 @@ function actualizarTextosFiltros() {
             btnEsp.textContent = textosFiltros[idiomaActual].verTodo;
         else
             btnEsp.textContent = textosFiltros[idiomaActual].verEsp;
+
+        if (cajaBuscador)
+            cajaBuscador.placeholder = textosFiltros[idiomaActual].buscar;
         
     }
 }
@@ -336,6 +340,11 @@ function toggleFiltro(tipo) {
     // Buscamos todos los platos que hay ahora mismo en la pantalla
     let todosLosPlatos = document.querySelectorAll(".plato-card");
 
+    let textoEscrito = "";
+    let cajaBuscador = document.querySelector("#buscador");
+    if (cajaBuscador)
+        textoEscrito = cajaBuscador.value.toLowerCase();
+
     // Los revisamos uno a uno
     for(let card of todosLosPlatos) {
         
@@ -349,6 +358,16 @@ function toggleFiltro(tipo) {
         // Si solo queremos especialidades y el plato tiene la clase item-normal lo quitamos
         if (soloEspecialidades === true && card.classList.contains("item-normal"))
             card.classList.add("oculto"); // ...lo escondemos también
+
+        let spanNombre = card.querySelector(".plato-nombre");
+        if (spanNombre) {
+            let nombreDelPlato = spanNombre.textContent.toLowerCase();
+            
+            // Si hay algo escrito en la caja Y el nombre del plato NO incluye ese texto...
+            if (textoEscrito !== "" && nombreDelPlato.includes(textoEscrito) === false) {
+                card.classList.add("oculto"); // ¡Lo ocultamos!
+            }
+        }
     }
 
     // 4. Actualizamos el texto de los botones ("Mostrar alcohol", etc.)
@@ -364,6 +383,14 @@ let btnEspecialidades = document.querySelector("#btn-especialidades");
 // Reemplazamos la flecha por 'function()'
 if(btnEspecialidades)
     btnEspecialidades.addEventListener("click", function() { toggleFiltro('especialidades'); });
+
+let inputBuscadorObj = document.querySelector("#buscador");
+if (inputBuscadorObj) {
+    inputBuscadorObj.addEventListener("input", function() { 
+        // Llamamos a toggleFiltro para que recalcule todo
+        toggleFiltro('buscador'); 
+    });
+}
 
 function cambiarIdioma(nuevoIdioma) {
     idiomaActual = nuevoIdioma;

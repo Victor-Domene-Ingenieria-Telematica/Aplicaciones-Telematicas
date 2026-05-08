@@ -74,6 +74,9 @@ let idiomaActual = localStorage.getItem("idioma_auto_gourmet") || "es";
 let mostrandoAlcohol = true;
 let soloEspecialidades = false;
 
+// NUEVO: Lista donde guardaremos los IDs de los platos que se vayan agotando
+let platosAgotados = []; 
+
 const prodsAlcohol = ["b4", "b5"]; 
 const prodsEspecialidades = ["co1", "co2", "ca1", "h1", "b5", "b1", "e3", "p1"]; 
 
@@ -206,9 +209,32 @@ function generarCarta() {
             nombre.textContent = prods[idProd];
 
             card.addEventListener("click", function() {
-                pedidos[idProd]++;
-                guardarPedidos(); 
-                actualizarTablaPedidos();
+                
+                // 1. Comprobamos si el plato ya está en la lista de agotados
+                if (platosAgotados.includes(idProd) === true)
+                    alert("Lo sentimos, este producto ya se ha agotado.");
+                else{
+                    // Tiramos un dado del 1 al 10
+                    let dado = Math.floor(Math.random() * 10) + 1;
+
+                    // Si sale el 10, el plato se agota
+                    if (dado === 10) {
+                        alert("Error, the product is out of stock");
+                        
+                        // Metemos el ID del producto en la lista negra
+                        platosAgotados.push(idProd);
+                        
+                        // Le bajamos la opacidad (transparencia) a esta tarjeta específica
+                        card.style.opacity = "0.4";
+                    } 
+                    else {
+                        // Si sale cualquier otro número (del 1 al 9), añadimos al pedido normal
+                        pedidos[idProd]++;
+                        guardarPedidos(); 
+                        actualizarTablaPedidos();
+                    }
+                }
+                
             });
 
             card.append(imgProd, nombre);

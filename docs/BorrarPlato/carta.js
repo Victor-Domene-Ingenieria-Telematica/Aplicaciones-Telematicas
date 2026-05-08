@@ -277,7 +277,20 @@ function actualizarTablaPedidos() {
                     guardarPedidos(); 
                     actualizarTablaPedidos();
                 };
-                tdAccion.append(btnRestar);
+
+                // 2. NUEVO: Creamos el botón de borrar
+                let btnBorrar = document.createElement("button");
+                btnBorrar.className = "btn-borrar";
+                btnBorrar.textContent = "X";
+                
+                // La lógica simple: ponemos la cantidad a 0 de golpe
+                btnBorrar.onclick = function() {
+                    pedidos[clave] = 0; 
+                    guardarPedidos(); 
+                    actualizarTablaPedidos();
+                };
+
+                tdAccion.append(btnRestar, btnBorrar);
                 
                 tr.append(tdNombre, tdCant, tdAccion);
                 tabla.append(tr);

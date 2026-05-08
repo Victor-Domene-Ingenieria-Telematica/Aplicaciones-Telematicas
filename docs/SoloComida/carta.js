@@ -73,16 +73,17 @@ let idiomaActual = localStorage.getItem("idioma_auto_gourmet") || "es";
 
 let mostrandoAlcohol = true;
 let soloEspecialidades = false;
+let soloComida = false;
 
 const prodsAlcohol = ["b4", "b5"]; 
 const prodsEspecialidades = ["co1", "co2", "ca1", "h1", "b5", "b1", "e3", "p1"]; 
 
 // Diccionarios para los botones de filtro
 const textosFiltros = {
-    es: { ocultarAlc: "Ocultar alcohol", mostrarAlc: "Mostrar alcohol", verEsp: "Especialidades", verTodo: "Ver carta completa" },
-    en: { ocultarAlc: "Hide alcohol", mostrarAlc: "Show alcohol", verEsp: "Chef's Specials", verTodo: "Full Menu" },
-    fr: { ocultarAlc: "Masquer l'alcool", mostrarAlc: "Afficher l'alcool", verEsp: "Spécialités du Chef", verTodo: "Carte Complète" },
-    de: { ocultarAlc: "Alkohol ausblenden", mostrarAlc: "Alkohol anzeigen", verEsp: "Spezialitäten", verTodo: "Ganze Speisekarte" }
+    es: { ocultarAlc: "Ocultar alcohol", mostrarAlc: "Mostrar alcohol", verEsp: "Especialidades", verTodo: "Ver carta completa", verComida: "Solo Comida", quitarComida: "Ver Bebidas" },
+    en: { ocultarAlc: "Hide alcohol", mostrarAlc: "Show alcohol", verEsp: "Chef's Specials", verTodo: "Full Menu", verComida: "Food Only", quitarComida: "Show Drinks" },
+    fr: { ocultarAlc: "Masquer l'alcool", mostrarAlc: "Afficher l'alcool", verEsp: "Spécialités du Chef", verTodo: "Carte Complète", verComida: "Seulement Nourriture", quitarComida: "Voir Boissons" },
+    de: { ocultarAlc: "Alkohol ausblenden", mostrarAlc: "Alkohol anzeigen", verEsp: "Spezialitäten", verTodo: "Ganze Speisekarte", verComida: "Nur Essen", quitarComida: "Getränke anzeigen" }
 };
 
 let pedidos = {};
@@ -190,10 +191,17 @@ function generarCarta() {
             if(!prodsEspecialidades.includes(idProd))
                 card.classList.add("item-normal");
 
+            // Si la categoría de este plato es la "b" (bebidas), le ponemos etiqueta
+            if (codCat === "b")
+                card.classList.add("item-bebida");
+
             if(!mostrandoAlcohol && prodsAlcohol.includes(idProd))
                 card.classList.add("oculto");
 
             if(soloEspecialidades && !prodsEspecialidades.includes(idProd))
+                card.classList.add("oculto");
+
+            if (soloComida === true && codCat === "b")
                 card.classList.add("oculto");
 
             let imgProd = document.createElement("img");
@@ -307,8 +315,9 @@ if(btnVaciarObj) {
 function actualizarTextosFiltros() {
     const btnAlc = document.querySelector("#btn-alcohol");
     const btnEsp = document.querySelector("#btn-especialidades");
+    const btnCom = document.querySelector("#btn-comida");
 
-    if(btnAlc && btnEsp) {
+    if(btnAlc && btnEsp && btnCom) {
         
         // Botón de Alcohol
         if(mostrandoAlcohol === true)
@@ -321,16 +330,32 @@ function actualizarTextosFiltros() {
             btnEsp.textContent = textosFiltros[idiomaActual].verTodo;
         else
             btnEsp.textContent = textosFiltros[idiomaActual].verEsp;
+
+        if(soloComida === true)
+            btnCom.textContent = textosFiltros[idiomaActual].quitarComida;
+        else
+            btnCom.textContent = textosFiltros[idiomaActual].verComida;
         
     }
 }
 
 function toggleFiltro(tipo) {
     // Cambiamos la variable del botón que hemos pulsado
-    if (tipo === 'alcohol') {
-        mostrandoAlcohol = !mostrandoAlcohol;
-    } else if (tipo === 'especialidades') {
-        soloEspecialidades = !soloEspecialidades;
+    if(tipo === 'alcohol') {
+        if(mostrandoAlcohol === true)
+            mostrandoAlcohol = false;
+        else
+            mostrandoAlcohol = true;
+    } else if(tipo === 'especialidades') {
+        if(soloEspecialidades === true)
+            soloEspecialidades = false;
+        else
+            soloEspecialidades = true;
+    } else if (tipo === 'comida') {
+        if(soloComida === true)
+            soloComida = false;
+        else
+            soloComida = true;
     }
 
     // Buscamos todos los platos que hay ahora mismo en la pantalla
@@ -349,7 +374,11 @@ function toggleFiltro(tipo) {
         // Si solo queremos especialidades y el plato tiene la clase item-normal lo quitamos
         if (soloEspecialidades === true && card.classList.contains("item-normal"))
             card.classList.add("oculto"); // ...lo escondemos también
+        
+        if (soloComida === true && card.classList.contains("item-bebida"))
+            card.classList.add("oculto");
     }
+
 
     // 4. Actualizamos el texto de los botones ("Mostrar alcohol", etc.)
     actualizarTextosFiltros();
@@ -364,6 +393,13 @@ let btnEspecialidades = document.querySelector("#btn-especialidades");
 // Reemplazamos la flecha por 'function()'
 if(btnEspecialidades)
     btnEspecialidades.addEventListener("click", function() { toggleFiltro('especialidades'); });
+
+let btnComidaObj = document.querySelector("#btn-comida");
+if (btnComidaObj) {
+    btnComidaObj.addEventListener("click", function() { 
+        toggleFiltro('comida'); 
+    });
+}
 
 function cambiarIdioma(nuevoIdioma) {
     idiomaActual = nuevoIdioma;

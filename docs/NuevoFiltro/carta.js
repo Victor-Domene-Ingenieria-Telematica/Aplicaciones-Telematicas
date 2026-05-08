@@ -73,16 +73,18 @@ let idiomaActual = localStorage.getItem("idioma_auto_gourmet") || "es";
 
 let mostrandoAlcohol = true;
 let soloEspecialidades = false;
+let soloVegano = false; // Estado del botón vegano
 
 const prodsAlcohol = ["b4", "b5"]; 
 const prodsEspecialidades = ["co1", "co2", "ca1", "h1", "b5", "b1", "e3", "p1"]; 
+const prodsVeganos = ["b1", "b2", "b3", "p3"]; // Agua, Coca Cola, Fanta y Fruta
 
-// Diccionarios para los botones de filtro
+// Diccionarios para los botones de filtro (AHORA CON TEXTOS VEGANOS)
 const textosFiltros = {
-    es: { ocultarAlc: "Ocultar alcohol", mostrarAlc: "Mostrar alcohol", verEsp: "Especialidades", verTodo: "Ver carta completa" },
-    en: { ocultarAlc: "Hide alcohol", mostrarAlc: "Show alcohol", verEsp: "Chef's Specials", verTodo: "Full Menu" },
-    fr: { ocultarAlc: "Masquer l'alcool", mostrarAlc: "Afficher l'alcool", verEsp: "Spécialités du Chef", verTodo: "Carte Complète" },
-    de: { ocultarAlc: "Alkohol ausblenden", mostrarAlc: "Alkohol anzeigen", verEsp: "Spezialitäten", verTodo: "Ganze Speisekarte" }
+    es: { ocultarAlc: "Ocultar alcohol", mostrarAlc: "Mostrar alcohol", verEsp: "Especialidades", verTodo: "Quitar especialidades", verVeg: "Menú Vegano", quitarVeg: "Quitar Vegano" },
+    en: { ocultarAlc: "Hide alcohol", mostrarAlc: "Show alcohol", verEsp: "Chef's Specials", verTodo: "All Menu", verVeg: "Vegan Menu", quitarVeg: "Remove Vegan" },
+    fr: { ocultarAlc: "Masquer l'alcool", mostrarAlc: "Afficher l'alcool", verEsp: "Spécialités", verTodo: "Carte Complète", verVeg: "Menu Vegan", quitarVeg: "Enlever Vegan" },
+    de: { ocultarAlc: "Alkohol ausblenden", mostrarAlc: "Alkohol anzeigen", verEsp: "Spezialitäten", verTodo: "Ganze Speisekarte", verVeg: "Veganes Menü", quitarVeg: "Vegan entfernen" }
 };
 
 let pedidos = {};
@@ -105,13 +107,14 @@ function inicializarPedidos() {
     // Miramos si hay datos guardados de una sesión anterior
     let guardados = localStorage.getItem("pedidos_auto_gourmet");
     
-    if(guardados)
+    if (guardados) {
+        // Si hay datos, los convertimos de nuevo a un objeto real
         pedidos = JSON.parse(guardados);
-    else {
+    } else {
         // Si no hay datos (primera vez que entra), inicializamos a 0
         // Usamos el bucle for...of como acordamos para evitar la función flecha
-        for(let sublista of lista_menu) {
-            for(let i = 1; i < sublista.length; i++) {
+        for (let sublista of lista_menu) {
+            for (let i = 1; i < sublista.length; i++) {
                 pedidos[sublista[i]] = 0;
             }
         }
@@ -178,22 +181,29 @@ function generarCarta() {
         // Le asignamos la clase CSS que la convierte en una cuadrícula ordenada
         grid.className = "platos-grid";
 
-        for(let idProd of sublista.slice(1)) {
+        for (let idProd of sublista.slice(1)) {
 
             // Creamos cada card para cada plato
             const card = document.createElement("div");
             card.className = "plato-card";
 
-            if(prodsAlcohol.includes(idProd))
+            if (prodsAlcohol.includes(idProd))
                 card.classList.add("item-alcohol");
-
-            if(!prodsEspecialidades.includes(idProd))
+            
+            if (!prodsEspecialidades.includes(idProd))
                 card.classList.add("item-normal");
+            
+            // NUEVO: Si está en la lista de veganos, le ponemos la clase "item-vegano"
+            if (prodsVeganos.includes(idProd))
+                card.classList.add("item-vegano");
 
-            if(!mostrandoAlcohol && prodsAlcohol.includes(idProd))
+            // Ocultamos si toca
+            if (!mostrandoAlcohol && prodsAlcohol.includes(idProd))
                 card.classList.add("oculto");
-
-            if(soloEspecialidades && !prodsEspecialidades.includes(idProd))
+            if (soloEspecialidades && !prodsEspecialidades.includes(idProd))
+                card.classList.add("oculto");
+            // Si queremos solo vegano y este plato NO está en la lista vegana, se oculta
+            if (soloVegano && !prodsVeganos.includes(idProd))
                 card.classList.add("oculto");
 
             let imgProd = document.createElement("img");
@@ -231,16 +241,12 @@ function actualizarTablaPedidos() {
     if (zonaPedidos && tabla) {
         document.querySelector("#titulo-pedidos").textContent = textosCarrito[idiomaActual].titulo;
         
-        if(btnVaciar)
-            btnVaciar.textContent = textosCarrito[idiomaActual].vaciar;
+        if(btnVaciar) btnVaciar.textContent = textosCarrito[idiomaActual].vaciar;
 
         let prods = productos_es;
-        if(idiomaActual === "en")
-            prods = productos_en;
-        else if(idiomaActual === "fr")
-            prods = productos_fr;
-        else if(idiomaActual === "de")
-            çprods = productos_de;
+        if (idiomaActual === "en") prods = productos_en;
+        else if (idiomaActual === "fr") prods = productos_fr;
+        else if (idiomaActual === "de") prods = productos_de;
 
         // Limpiamos el 'style' inline y le ponemos la clase nueva
         tabla.innerHTML = `
@@ -254,7 +260,7 @@ function actualizarTablaPedidos() {
         let hayPedidos = false;
 
         for (let clave in pedidos) {
-            if(pedidos[clave] > 0) {
+            if (pedidos[clave] > 0) {
                 hayPedidos = true;
                 
                 let tr = document.createElement("tr");
@@ -285,10 +291,11 @@ function actualizarTablaPedidos() {
         }
 
         // Usamos tu clase .oculto en lugar de modificar el style.display
-        if(hayPedidos)
+        if (hayPedidos) {
             zonaPedidos.classList.remove("oculto");
-        else
+        } else {
             zonaPedidos.classList.add("oculto");
+        }
     }
 }
 
@@ -296,7 +303,7 @@ const btnVaciarObj = document.querySelector("#btn-vaciar");
 if(btnVaciarObj) {
     // Reemplazamos la flecha por 'function()'
     btnVaciarObj.addEventListener("click", function() {
-        for(let clave in pedidos) {
+        for (let clave in pedidos) {
             pedidos[clave] = 0;
         }
         guardarPedidos(); 
@@ -307,51 +314,61 @@ if(btnVaciarObj) {
 function actualizarTextosFiltros() {
     const btnAlc = document.querySelector("#btn-alcohol");
     const btnEsp = document.querySelector("#btn-especialidades");
+    const btnVeg = document.querySelector("#btn-vegano"); // Capturamos el botón nuevo
 
-    if(btnAlc && btnEsp) {
+    if (btnAlc && btnEsp && btnVeg) {
         
-        // Botón de Alcohol
+        // Logica para el botón de Alcohol
         if(mostrandoAlcohol === true)
             btnAlc.textContent = textosFiltros[idiomaActual].ocultarAlc;
         else
             btnAlc.textContent = textosFiltros[idiomaActual].mostrarAlc;
 
-        // Botón de Especialidades
+        // Logica para el botón de Especialidades
         if(soloEspecialidades === true)
             btnEsp.textContent = textosFiltros[idiomaActual].verTodo;
         else
             btnEsp.textContent = textosFiltros[idiomaActual].verEsp;
-        
+
+        // Logica para el botón Vegano
+        if(soloVegano === true)
+            btnVeg.textContent = textosFiltros[idiomaActual].quitarVeg;
+        else
+            btnVeg.textContent = textosFiltros[idiomaActual].verVeg;
     }
 }
 
 function toggleFiltro(tipo) {
-    // Cambiamos la variable del botón que hemos pulsado
-    if (tipo === 'alcohol') {
+    // Cambiamos la variable del botón
+    if(tipo === 'alcohol')
         mostrandoAlcohol = !mostrandoAlcohol;
-    } else if (tipo === 'especialidades') {
+    else if (tipo === 'especialidades')
         soloEspecialidades = !soloEspecialidades;
-    }
+    else if(tipo === 'vegano')
+        soloVegano = !soloVegano; // Invertimos la variable
 
-    // Buscamos todos los platos que hay ahora mismo en la pantalla
+    // Buscamos todos los platos
     let todosLosPlatos = document.querySelectorAll(".plato-card");
 
-    // Los revisamos uno a uno
+    // Revisamos uno a uno
     for(let card of todosLosPlatos) {
         
-        // Por defecto, le quitamos la clase oculto (lo mostramos)
+        // Lo mostramos por defecto
         card.classList.remove("oculto");
 
-        // Si no queremos alcohol y el plato tiene la clase item-alcohol lo quitamos
+        // Regla de Alcohol
         if (mostrandoAlcohol === false && card.classList.contains("item-alcohol"))
             card.classList.add("oculto");
 
-        // Si solo queremos especialidades y el plato tiene la clase item-normal lo quitamos
+        // Regla de Especialidades
         if (soloEspecialidades === true && card.classList.contains("item-normal"))
-            card.classList.add("oculto"); // ...lo escondemos también
+            card.classList.add("oculto"); 
+
+        // Regla de Veganos (¡Muy simple de leer!)
+        if (soloVegano === true && card.classList.contains("item-vegano") === false)
+            card.classList.add("oculto"); 
     }
 
-    // 4. Actualizamos el texto de los botones ("Mostrar alcohol", etc.)
     actualizarTextosFiltros();
 }
 
@@ -364,6 +381,10 @@ let btnEspecialidades = document.querySelector("#btn-especialidades");
 // Reemplazamos la flecha por 'function()'
 if(btnEspecialidades)
     btnEspecialidades.addEventListener("click", function() { toggleFiltro('especialidades'); });
+
+let btnVeganoObj = document.querySelector("#btn-vegano");
+if(btnVeganoObj)
+    btnVeganoObj.addEventListener("click", function() { toggleFiltro('vegano'); });
 
 function cambiarIdioma(nuevoIdioma) {
     idiomaActual = nuevoIdioma;

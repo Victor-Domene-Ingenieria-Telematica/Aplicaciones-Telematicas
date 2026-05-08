@@ -88,10 +88,10 @@ const textosFiltros = {
 let pedidos = {};
 
 const textosCarrito = {
-    es: { titulo: "PEDIDO", prod: "Producto", cant: "Cant.", accion: "Quitar", vaciar: "VACIAR PEDIDO" },
-    en: { titulo: "ORDER", prod: "Product", cant: "Qty", accion: "Remove", vaciar: "CLEAR ORDER" },
-    fr: { titulo: "COMMANDE", prod: "Produit", cant: "Qté", accion: "Retirer", vaciar: "VIDER" },
-    de: { titulo: "BESTELLUNG", prod: "Produkt", cant: "Menge", accion: "Löschen", vaciar: "BESTELLUNG LEEREN" }
+    es: { titulo: "PEDIDO", prod: "Producto", cant: "Cant.", accion: "Quitar", vaciar: "VACIAR PEDIDO", articulos: "Total artículos: " },
+    en: { titulo: "ORDER", prod: "Product", cant: "Qty", accion: "Remove", vaciar: "CLEAR ORDER", articulos: "Total items: " },
+    fr: { titulo: "COMMANDE", prod: "Produit", cant: "Qté", accion: "Retirer", vaciar: "VIDER", articulos: "Total articles: " },
+    de: { titulo: "BESTELLUNG", prod: "Produkt", cant: "Menge", accion: "Löschen", vaciar: "BESTELLUNG LEEREN", articulos: "Gesamte Artikel: " }
 };
 
 // Funcion para guardar en LocalStorage
@@ -227,22 +227,21 @@ function actualizarTablaPedidos() {
     const zonaPedidos = document.querySelector("#zona-pedidos");
     const tabla = document.querySelector("#tabla-pedidos");
     const btnVaciar = document.querySelector("#btn-vaciar");
+    // Capturamos el hueco del contador que acabamos de crear en el HTML
+    const textoContador = document.querySelector("#contador-articulos"); 
     
     if (zonaPedidos && tabla) {
         document.querySelector("#titulo-pedidos").textContent = textosCarrito[idiomaActual].titulo;
         
-        if(btnVaciar)
+        if (btnVaciar) {
             btnVaciar.textContent = textosCarrito[idiomaActual].vaciar;
+        }
 
         let prods = productos_es;
-        if(idiomaActual === "en")
-            prods = productos_en;
-        else if(idiomaActual === "fr")
-            prods = productos_fr;
-        else if(idiomaActual === "de")
-            çprods = productos_de;
+        if (idiomaActual === "en") prods = productos_en;
+        else if (idiomaActual === "fr") prods = productos_fr;
+        else if (idiomaActual === "de") prods = productos_de;
 
-        // Limpiamos el 'style' inline y le ponemos la clase nueva
         tabla.innerHTML = `
             <tr class="cabecera-tabla">
                 <th>${textosCarrito[idiomaActual].prod}</th>
@@ -252,20 +251,25 @@ function actualizarTablaPedidos() {
         `;
 
         let hayPedidos = false;
+        
+        // Creamos la "caja" para ir contando los platos y la empezamos en 0
+        let totalArticulos = 0; 
 
         for (let clave in pedidos) {
-            if(pedidos[clave] > 0) {
+            if (pedidos[clave] > 0) {
                 hayPedidos = true;
+
+                totalArticulos = totalArticulos + pedidos[clave];
                 
                 let tr = document.createElement("tr");
                 
                 let tdNombre = document.createElement("td");
                 tdNombre.textContent = prods[clave];
-                tdNombre.className = "nombre-pedido"; // Asignamos clase CSS
+                tdNombre.className = "nombre-pedido"; 
                 
                 let tdCant = document.createElement("td");
                 tdCant.textContent = pedidos[clave];
-                tdCant.className = "cantidad-pedido"; // Asignamos clase CSS
+                tdCant.className = "cantidad-pedido"; 
 
                 let tdAccion = document.createElement("td");
                 let btnRestar = document.createElement("button");
@@ -284,14 +288,17 @@ function actualizarTablaPedidos() {
             }
         }
 
-        // Usamos tu clase .oculto en lugar de modificar el style.display
-        if(hayPedidos)
+        // Mostrar u ocultar el carrito
+        if (hayPedidos === true) {
             zonaPedidos.classList.remove("oculto");
-        else
+
+            // Escribimos el texto de la traducción y le pegamos el número al final
+            if(textoContador)
+                textoContador.textContent = textosCarrito[idiomaActual].articulos + totalArticulos; 
+        } else
             zonaPedidos.classList.add("oculto");
     }
 }
-
 const btnVaciarObj = document.querySelector("#btn-vaciar");
 if(btnVaciarObj) {
     // Reemplazamos la flecha por 'function()'

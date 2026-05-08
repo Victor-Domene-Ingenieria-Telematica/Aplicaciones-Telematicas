@@ -155,6 +155,7 @@
         /* Botón rojo de vaciar carrito */
         .btn-vaciar {
             width: 100%;
+            margin-top: 20px;
             background: #dc3545;
             color: white;
             border: none;
@@ -179,6 +180,11 @@
         .cantidad-pedido {
             font-size: 1.2rem;
         }
+
+        .precio {
+            color:#ffffff;
+        }
+
 
     </style>
     <title>Auto-Gourmet</title>
@@ -216,7 +222,15 @@
                         <table id="tabla-pedidos" class="table table-dark">
                         </table>
                         
+                        <br> <table id="tabla-total">
+                            <tr>
+                                <th id="etiqueta-total" class="precio">TOTAL</th>
+                                <td id="valor-total" class="precio">0.00 €</td>
+                            </tr>
+                        </table>
+
                         <button id="btn-vaciar" class="btn-vaciar"></button>
+                        </table>
                     </div>
                 </div>
             </div>

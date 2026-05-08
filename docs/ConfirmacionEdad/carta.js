@@ -71,7 +71,18 @@ const productos_de = {
 // Miramos si hay un idioma guardado. Si no hay nada (null), ponemos "es" por defecto.
 let idiomaActual = localStorage.getItem("idioma_auto_gourmet") || "es";
 
-let mostrandoAlcohol = true;
+// Nada más cargar el archivo, lanzamos la pregunta
+let respuestaInicial = prompt("Bienvenido a Auto-Gourmet. ¿Eres mayor de 18 años? (SI/NO)");
+
+let mostrandoAlcohol; // Creamos la variable sin valor todavía
+
+// Comprobamos la respuesta para darle el valor inicial
+if (respuestaInicial === "SI" || respuestaInicial === "si") {
+    mostrandoAlcohol = true;
+} else {
+    mostrandoAlcohol = false;
+    alert("Entendido. Se ocultarán las bebidas con alcohol");
+}
 let soloEspecialidades = false;
 
 const prodsAlcohol = ["b4", "b5"]; 
@@ -326,35 +337,59 @@ function actualizarTextosFiltros() {
 }
 
 function toggleFiltro(tipo) {
-    // Cambiamos la variable del botón que hemos pulsado
+    
     if (tipo === 'alcohol') {
-        mostrandoAlcohol = !mostrandoAlcohol;
+        
+        // Si el alcohol ya se está viendo, lo ocultamos sin preguntar nada
+        if (mostrandoAlcohol === true) {
+            mostrandoAlcohol = false;
+        } 
+        else {
+            // Si el alcohol está oculto, le sacamos la ventanita para que ESCRIBA
+            let respuesta = prompt("¿Eres mayor de 18 años? Escribe SI o NO");
+
+            // Comprobamos si ha escrito "SI" o "si" (por si acaso lo pone en minúsculas)
+            if (respuesta === "SI" || respuesta === "si") {
+                mostrandoAlcohol = true; 
+            } else {
+                // Si escribe NO, o si le da a cancelar, le sacamos un aviso normal y cortamos
+                alert("Lo sentimos, no puedes ver esta sección.");
+                return; // Cortamos la función aquí para que no haga nada más
+            }
+        }
+        
     } else if (tipo === 'especialidades') {
-        soloEspecialidades = !soloEspecialidades;
+        // Lógica simple para el botón de especialidades
+        if (soloEspecialidades === true) {
+            soloEspecialidades = false;
+        } else {
+            soloEspecialidades = true;
+        }
     }
 
-    // Buscamos todos los platos que hay ahora mismo en la pantalla
+    // 2. Buscamos todos los platos que hay ahora mismo en la pantalla
     let todosLosPlatos = document.querySelectorAll(".plato-card");
 
-    // Los revisamos uno a uno
+    // 3. Los revisamos uno a uno
     for(let card of todosLosPlatos) {
         
         // Por defecto, le quitamos la clase oculto (lo mostramos)
         card.classList.remove("oculto");
 
         // Si no queremos alcohol y el plato tiene la clase item-alcohol lo quitamos
-        if (mostrandoAlcohol === false && card.classList.contains("item-alcohol"))
+        if (mostrandoAlcohol === false && card.classList.contains("item-alcohol") === true) {
             card.classList.add("oculto");
+        }
 
         // Si solo queremos especialidades y el plato tiene la clase item-normal lo quitamos
-        if (soloEspecialidades === true && card.classList.contains("item-normal"))
-            card.classList.add("oculto"); // ...lo escondemos también
+        if (soloEspecialidades === true && card.classList.contains("item-normal") === true) {
+            card.classList.add("oculto"); 
+        }
     }
 
     // 4. Actualizamos el texto de los botones ("Mostrar alcohol", etc.)
     actualizarTextosFiltros();
 }
-
 let btnAlcohol = document.querySelector("#btn-alcohol");
 // Reemplazamos la flecha por 'function()'
 if(btnAlcohol)

@@ -88,10 +88,10 @@ const textosFiltros = {
 let pedidos = {};
 
 const textosCarrito = {
-    es: { titulo: "PEDIDO", prod: "Producto", cant: "Cant.", accion: "Quitar", vaciar: "VACIAR PEDIDO" },
-    en: { titulo: "ORDER", prod: "Product", cant: "Qty", accion: "Remove", vaciar: "CLEAR ORDER" },
-    fr: { titulo: "COMMANDE", prod: "Produit", cant: "Qté", accion: "Retirer", vaciar: "VIDER" },
-    de: { titulo: "BESTELLUNG", prod: "Produkt", cant: "Menge", accion: "Löschen", vaciar: "BESTELLUNG LEEREN" }
+    es: { titulo: "PEDIDO", prod: "Producto", cant: "Cant.", accion: "Quitar", vaciar: "VACIAR PEDIDO", ronda: "PEDIR OTRA RONDA" },
+    en: { titulo: "ORDER", prod: "Product", cant: "Qty", accion: "Remove", vaciar: "CLEAR ORDER", ronda: "ORDER ANOTHER ROUND" },
+    fr: { titulo: "COMMANDE", prod: "Produit", cant: "Qté", accion: "Retirer", vaciar: "VIDER", ronda: "RECOMMANDER" },
+    de: { titulo: "BESTELLUNG", prod: "Produkt", cant: "Menge", accion: "Löschen", vaciar: "BESTELLUNG LEEREN", ronda: "NOCH EINE RUNDE" }
 };
 
 // Funcion para guardar en LocalStorage
@@ -227,12 +227,16 @@ function actualizarTablaPedidos() {
     const zonaPedidos = document.querySelector("#zona-pedidos");
     const tabla = document.querySelector("#tabla-pedidos");
     const btnVaciar = document.querySelector("#btn-vaciar");
+    const btnRonda = document.querySelector("#btn-ronda");
     
     if (zonaPedidos && tabla) {
         document.querySelector("#titulo-pedidos").textContent = textosCarrito[idiomaActual].titulo;
         
         if(btnVaciar)
             btnVaciar.textContent = textosCarrito[idiomaActual].vaciar;
+
+        if (btnRonda)
+            btnRonda.textContent = textosCarrito[idiomaActual].ronda;
 
         let prods = productos_es;
         if(idiomaActual === "en")
@@ -299,6 +303,28 @@ if(btnVaciarObj) {
         for(let clave in pedidos) {
             pedidos[clave] = 0;
         }
+        guardarPedidos(); 
+        actualizarTablaPedidos();
+    });
+}
+
+// Capturamos el botón verde
+const btnRondaObj = document.querySelector("#btn-ronda");
+if (btnRondaObj) {
+    btnRondaObj.addEventListener("click", function() {
+        
+        // Recorremos todos los platos que existen en nuestro diccionario de pedidos
+        for (let clave in pedidos) {
+            
+            // Si la cantidad de ese plato es mayor que 0 (es decir, ya está en el carrito)
+            if (pedidos[clave] > 0) {
+                // Cogemos lo que hay y lo multiplicamos por 2
+                pedidos[clave] = pedidos[clave] * 2;
+            }
+            
+        }
+        
+        // Guardamos los nuevos números en la memoria y redibujamos el carrito
         guardarPedidos(); 
         actualizarTablaPedidos();
     });

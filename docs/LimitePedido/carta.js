@@ -206,9 +206,25 @@ function generarCarta() {
             nombre.textContent = prods[idProd];
 
             card.addEventListener("click", function() {
-                pedidos[idProd]++;
-                guardarPedidos(); 
-                actualizarTablaPedidos();
+                
+                // Antes de sumar nada, creamos una hucha para contar cuántas cosas tenemos en total
+                let cantidadTotal = 0;
+                
+                // Recorremos nuestro diccionario de pedidos sumando las cantidades
+                for (let clave in pedidos) {
+                    cantidadTotal = cantidadTotal + pedidos[clave];
+                }
+
+                // Comprobamos si hemos llegado al límite (por ejemplo, 10)
+                if (cantidadTotal >= 10)
+                    // Si ya tenemos 10 o más, sacamos un aviso y NO sumamos nada
+                    alert("¡Límite alcanzado! Por motivos de aforo en cocina no puedes pedir más de 10 artículos.");
+                else {
+                    // Si tenemos menos de 10, sumamos el plato con normalidad
+                    pedidos[idProd]++;
+                    guardarPedidos(); 
+                    actualizarTablaPedidos();
+                }
             });
 
             card.append(imgProd, nombre);
