@@ -1,7 +1,7 @@
 'use strict';
 
 // De string a number
-let string1
+let string1;
 string1 = "2026";
 let num1;
 num1 = Number(string1);
