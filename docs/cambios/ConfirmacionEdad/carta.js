@@ -68,13 +68,13 @@ const productos_de = {
     "p1": 'Geräucherter Käsekuchen', "p2": 'Schokoladen-Coulant', "p3": 'Obst der Saison'
 };
 
-// Miramos si hay un idioma guardado. Si no hay nada (null), ponemos "es" por defecto.
+// Miramos si hay un idioma guardado. Si no hay nada, ponemos "es" por defecto.
 let idiomaActual = localStorage.getItem("idioma_auto_gourmet") || "es";
 
 // Nada más cargar el archivo, lanzamos la pregunta
 let respuestaInicial = prompt("Bienvenido a Auto-Gourmet. ¿Eres mayor de 18 años? (SI/NO)");
 
-let mostrandoAlcohol; // Creamos la variable sin valor todavía
+let mostrandoAlcohol;
 
 // Comprobamos la respuesta para darle el valor inicial
 if (respuestaInicial === "SI" || respuestaInicial === "si") {
@@ -120,7 +120,6 @@ function inicializarPedidos() {
         pedidos = JSON.parse(guardados);
     else {
         // Si no hay datos (primera vez que entra), inicializamos a 0
-        // Usamos el bucle for...of como acordamos para evitar la función flecha
         for(let sublista of lista_menu) {
             for(let i = 1; i < sublista.length; i++) {
                 pedidos[sublista[i]] = 0;
@@ -295,7 +294,6 @@ function actualizarTablaPedidos() {
             }
         }
 
-        // Usamos tu clase .oculto en lugar de modificar el style.display
         if(hayPedidos)
             zonaPedidos.classList.remove("oculto");
         else
@@ -305,7 +303,7 @@ function actualizarTablaPedidos() {
 
 const btnVaciarObj = document.querySelector("#btn-vaciar");
 if(btnVaciarObj) {
-    // Reemplazamos la flecha por 'function()'
+    
     btnVaciarObj.addEventListener("click", function() {
         for(let clave in pedidos) {
             pedidos[clave] = 0;
@@ -340,7 +338,6 @@ function toggleFiltro(tipo) {
     
     if (tipo === 'alcohol') {
         
-        // Si el alcohol ya se está viendo, lo ocultamos sin preguntar nada
         if (mostrandoAlcohol === true) {
             mostrandoAlcohol = false;
         } 
@@ -348,18 +345,17 @@ function toggleFiltro(tipo) {
             // Si el alcohol está oculto, le sacamos la ventanita para que ESCRIBA
             let respuesta = prompt("¿Eres mayor de 18 años? Escribe SI o NO");
 
-            // Comprobamos si ha escrito "SI" o "si" (por si acaso lo pone en minúsculas)
+            // Comprobamos si ha escrito "SI" o "si"
             if (respuesta === "SI" || respuesta === "si") {
                 mostrandoAlcohol = true; 
             } else {
                 // Si escribe NO, o si le da a cancelar, le sacamos un aviso normal y cortamos
-                alert("Lo sentimos, no puedes ver esta sección.");
-                return; // Cortamos la función aquí para que no haga nada más
+                alert("Lo sentimos, no puedes ver esta sección");
+                return;
             }
         }
         
     } else if (tipo === 'especialidades') {
-        // Lógica simple para el botón de especialidades
         if (soloEspecialidades === true) {
             soloEspecialidades = false;
         } else {
@@ -367,10 +363,9 @@ function toggleFiltro(tipo) {
         }
     }
 
-    // 2. Buscamos todos los platos que hay ahora mismo en la pantalla
+    // Buscamos todos los platos que hay ahora mismo en la pantalla
     let todosLosPlatos = document.querySelectorAll(".plato-card");
 
-    // 3. Los revisamos uno a uno
     for(let card of todosLosPlatos) {
         
         // Por defecto, le quitamos la clase oculto (lo mostramos)
@@ -387,16 +382,16 @@ function toggleFiltro(tipo) {
         }
     }
 
-    // 4. Actualizamos el texto de los botones ("Mostrar alcohol", etc.)
+    // Actualizamos el texto de los botones ("Mostrar alcohol", etc.)
     actualizarTextosFiltros();
 }
 let btnAlcohol = document.querySelector("#btn-alcohol");
-// Reemplazamos la flecha por 'function()'
+
 if(btnAlcohol)
     btnAlcohol.addEventListener("click", function() { toggleFiltro('alcohol'); });
 
 let btnEspecialidades = document.querySelector("#btn-especialidades");
-// Reemplazamos la flecha por 'function()'
+
 if(btnEspecialidades)
     btnEspecialidades.addEventListener("click", function() { toggleFiltro('especialidades'); });
 
@@ -406,7 +401,7 @@ function cambiarIdioma(nuevoIdioma) {
     generarCarta();                                            
 }
 
-// Reemplazamos la flecha por 'function()'
+
 document.querySelector("#btn-es").onclick = function() { cambiarIdioma("es"); };
 document.querySelector("#btn-en").onclick = function() { cambiarIdioma("en"); };
 document.querySelector("#btn-fr").onclick = function() { cambiarIdioma("fr"); };

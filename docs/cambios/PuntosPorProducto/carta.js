@@ -27,7 +27,7 @@ const imagenesProductos = {
     "p1": "images/postres/tarta_queso_ahumada.png", "p2": "images/postres/coulant.png", "p3": "images/postres/fruta.png"
 };
 
-// Ponemos las bebidas y el agua a 0 puntos como pedía el enunciado
+// Ponemos las bebidas y el agua a 0 puntos
 const puntosProductos = {
     "b1": 0, "b2": 0, "b3": 0, "b4": 0, "b5": 0,
     "e1": 10, "e2": 8, "e3": 5, "e4": 10,
@@ -78,7 +78,7 @@ const productos_de = {
     "p1": 'Geräucherter Käsekuchen', "p2": 'Schokoladen-Coulant', "p3": 'Obst der Saison'
 };
 
-// Miramos si hay un idioma guardado. Si no hay nada (null), ponemos "es" por defecto.
+// Miramos si hay un idioma guardado. Si no hay nada, ponemos "es" por defecto.
 let idiomaActual = localStorage.getItem("idioma_auto_gourmet") || "es";
 
 let mostrandoAlcohol = true;
@@ -97,7 +97,6 @@ const textosFiltros = {
 
 let pedidos = {};
 
-// --- Textos del carrito para incluir las columnas de puntos ---
 const textosCarrito = {
     es: { titulo: "PEDIDO", prod: "Producto", ptsUnit: "Puntos", cant: "Cant.", ptsTotal: "Total Pts", accion: "Quitar", vaciar: "VACIAR PEDIDO", granTotalPts: "TOTAL PUNTOS" },
     en: { titulo: "ORDER", prod: "Product", ptsUnit: "Points", cant: "Qty", ptsTotal: "Total Pts", accion: "Remove", vaciar: "CLEAR ORDER", granTotalPts: "TOTAL POINTS" },
@@ -120,7 +119,6 @@ function inicializarPedidos() {
         pedidos = JSON.parse(guardados);
     else {
         // Si no hay datos (primera vez que entra), inicializamos a 0
-        // Usamos el bucle for...of como acordamos para evitar la función flecha
         for(let sublista of lista_menu) {
             for(let i = 1; i < sublista.length; i++) {
                 pedidos[sublista[i]] = 0;
@@ -216,7 +214,6 @@ function generarCarta() {
             nombre.className = "plato-nombre";
             nombre.textContent = prods[idProd];
 
-            // --- Etiqueta para los puntos del plato ---
             let puntosTag = document.createElement("div");
             puntosTag.textContent = puntosProductos[idProd] + " pts";
             puntosTag.className = "puntos";
@@ -227,7 +224,6 @@ function generarCarta() {
                 actualizarTablaPedidos();
             });
 
-            // Metemos la imagen, el nombre Y la etiqueta de puntos en la tarjeta
             card.append(imgProd, nombre, puntosTag);
             grid.append(card);
         }
@@ -245,7 +241,6 @@ function actualizarTablaPedidos() {
     const tabla = document.querySelector("#tabla-pedidos");
     const btnVaciar = document.querySelector("#btn-vaciar");
     
-    // Capturamos las etiquetas de la tabla nueva
     const etiquetaPuntos = document.querySelector("#etiqueta-total-puntos");
     const valorPuntos = document.querySelector("#valor-total-puntos");
     
@@ -273,14 +268,13 @@ function actualizarTablaPedidos() {
 
         let hayPedidos = false;
         
-        // --- Hucha global para todos los puntos del pedido ---
+        // Hucha global para todos los puntos del pedido
         let totalPuntosGlobal = 0; 
 
         for (let clave in pedidos) {
             if(pedidos[clave] > 0) {
                 hayPedidos = true;
                 
-                // --- MATEMÁTICAS DE PUNTOS ---
                 let puntosUnidad = puntosProductos[clave]; 
                 let cantidadPlato = pedidos[clave];
                 let puntosDeEstaLinea = puntosUnidad * cantidadPlato;
@@ -294,7 +288,6 @@ function actualizarTablaPedidos() {
                 tdNombre.textContent = prods[clave];
                 tdNombre.className = "nombre-pedido"; 
                 
-                // NUEVA COLUMNA: Puntos por artículo
                 let tdPuntosUnit = document.createElement("td");
                 tdPuntosUnit.textContent = puntosUnidad;
 
@@ -302,7 +295,6 @@ function actualizarTablaPedidos() {
                 tdCant.textContent = cantidadPlato;
                 tdCant.className = "cantidad-pedido"; 
 
-                // NUEVA COLUMNA: Puntos totales de esta línea
                 let tdPuntosLinea = document.createElement("td");
                 tdPuntosLinea.textContent = puntosDeEstaLinea;
 
@@ -318,7 +310,7 @@ function actualizarTablaPedidos() {
                 };
                 tdAccion.append(btnRestar);
                 
-                // Añadimos las 5 celdas en el orden correcto
+                // Añadimos las 5 celdas
                 tr.append(tdNombre, tdPuntosUnit, tdCant, tdPuntosLinea, tdAccion);
                 tabla.append(tr);
             }
@@ -340,7 +332,7 @@ function actualizarTablaPedidos() {
 
 const btnVaciarObj = document.querySelector("#btn-vaciar");
 if(btnVaciarObj) {
-    // Reemplazamos la flecha por 'function()'
+    
     btnVaciarObj.addEventListener("click", function() {
         for(let clave in pedidos) {
             pedidos[clave] = 0;
@@ -382,7 +374,6 @@ function toggleFiltro(tipo) {
     // Buscamos todos los platos que hay ahora mismo en la pantalla
     let todosLosPlatos = document.querySelectorAll(".plato-card");
 
-    // Los revisamos uno a uno
     for(let card of todosLosPlatos) {
         
         // Por defecto, le quitamos la clase oculto (lo mostramos)
@@ -394,20 +385,20 @@ function toggleFiltro(tipo) {
 
         // Si solo queremos especialidades y el plato tiene la clase item-normal lo quitamos
         if (soloEspecialidades === true && card.classList.contains("item-normal"))
-            card.classList.add("oculto"); // ...lo escondemos también
+            card.classList.add("oculto");
     }
 
-    // 4. Actualizamos el texto de los botones ("Mostrar alcohol", etc.)
+    // Actualizamos el texto de los botones ("Mostrar alcohol", etc.)
     actualizarTextosFiltros();
 }
 
 let btnAlcohol = document.querySelector("#btn-alcohol");
-// Reemplazamos la flecha por 'function()'
+
 if(btnAlcohol)
     btnAlcohol.addEventListener("click", function() { toggleFiltro('alcohol'); });
 
 let btnEspecialidades = document.querySelector("#btn-especialidades");
-// Reemplazamos la flecha por 'function()'
+
 if(btnEspecialidades)
     btnEspecialidades.addEventListener("click", function() { toggleFiltro('especialidades'); });
 
@@ -417,7 +408,7 @@ function cambiarIdioma(nuevoIdioma) {
     generarCarta();                                            
 }
 
-// Reemplazamos la flecha por 'function()'
+
 document.querySelector("#btn-es").onclick = function() { cambiarIdioma("es"); };
 document.querySelector("#btn-en").onclick = function() { cambiarIdioma("en"); };
 document.querySelector("#btn-fr").onclick = function() { cambiarIdioma("fr"); };

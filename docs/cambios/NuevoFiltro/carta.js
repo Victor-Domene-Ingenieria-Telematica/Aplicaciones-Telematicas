@@ -68,18 +68,18 @@ const productos_de = {
     "p1": 'Geräucherter Käsekuchen', "p2": 'Schokoladen-Coulant', "p3": 'Obst der Saison'
 };
 
-// Miramos si hay un idioma guardado. Si no hay nada (null), ponemos "es" por defecto.
+// Miramos si hay un idioma guardado. Si no hay nada, ponemos "es" por defecto.
 let idiomaActual = localStorage.getItem("idioma_auto_gourmet") || "es";
 
 let mostrandoAlcohol = true;
 let soloEspecialidades = false;
-let soloVegano = false; // Estado del botón vegano
+let soloVegano = false;
 
 const prodsAlcohol = ["b4", "b5"]; 
 const prodsEspecialidades = ["co1", "co2", "ca1", "h1", "b5", "b1", "e3", "p1"]; 
-const prodsVeganos = ["b1", "b2", "b3", "p3"]; // Agua, Coca Cola, Fanta y Fruta
+const prodsVeganos = ["b1", "b2", "b3", "p3"];
 
-// Diccionarios para los botones de filtro (AHORA CON TEXTOS VEGANOS)
+// Diccionarios para los botones de filtro
 const textosFiltros = {
     es: { ocultarAlc: "Ocultar alcohol", mostrarAlc: "Mostrar alcohol", verEsp: "Especialidades", verTodo: "Quitar especialidades", verVeg: "Menú Vegano", quitarVeg: "Quitar Vegano" },
     en: { ocultarAlc: "Hide alcohol", mostrarAlc: "Show alcohol", verEsp: "Chef's Specials", verTodo: "All Menu", verVeg: "Vegan Menu", quitarVeg: "Remove Vegan" },
@@ -112,7 +112,6 @@ function inicializarPedidos() {
         pedidos = JSON.parse(guardados);
     } else {
         // Si no hay datos (primera vez que entra), inicializamos a 0
-        // Usamos el bucle for...of como acordamos para evitar la función flecha
         for (let sublista of lista_menu) {
             for (let i = 1; i < sublista.length; i++) {
                 pedidos[sublista[i]] = 0;
@@ -193,7 +192,7 @@ function generarCarta() {
             if (!prodsEspecialidades.includes(idProd))
                 card.classList.add("item-normal");
             
-            // NUEVO: Si está en la lista de veganos, le ponemos la clase "item-vegano"
+            // Si está en la lista de veganos, le ponemos la clase "item-vegano"
             if (prodsVeganos.includes(idProd))
                 card.classList.add("item-vegano");
 
@@ -202,7 +201,7 @@ function generarCarta() {
                 card.classList.add("oculto");
             if (soloEspecialidades && !prodsEspecialidades.includes(idProd))
                 card.classList.add("oculto");
-            // Si queremos solo vegano y este plato NO está en la lista vegana, se oculta
+            // Si queremos solo vegano y este plato no está en la lista vegana, se oculta
             if (soloVegano && !prodsVeganos.includes(idProd))
                 card.classList.add("oculto");
 
@@ -290,7 +289,6 @@ function actualizarTablaPedidos() {
             }
         }
 
-        // Usamos tu clase .oculto en lugar de modificar el style.display
         if (hayPedidos) {
             zonaPedidos.classList.remove("oculto");
         } else {
@@ -301,7 +299,6 @@ function actualizarTablaPedidos() {
 
 const btnVaciarObj = document.querySelector("#btn-vaciar");
 if(btnVaciarObj) {
-    // Reemplazamos la flecha por 'function()'
     btnVaciarObj.addEventListener("click", function() {
         for (let clave in pedidos) {
             pedidos[clave] = 0;
@@ -314,7 +311,7 @@ if(btnVaciarObj) {
 function actualizarTextosFiltros() {
     const btnAlc = document.querySelector("#btn-alcohol");
     const btnEsp = document.querySelector("#btn-especialidades");
-    const btnVeg = document.querySelector("#btn-vegano"); // Capturamos el botón nuevo
+    const btnVeg = document.querySelector("#btn-vegano");
 
     if (btnAlc && btnEsp && btnVeg) {
         
@@ -345,12 +342,11 @@ function toggleFiltro(tipo) {
     else if (tipo === 'especialidades')
         soloEspecialidades = !soloEspecialidades;
     else if(tipo === 'vegano')
-        soloVegano = !soloVegano; // Invertimos la variable
+        soloVegano = !soloVegano;
 
     // Buscamos todos los platos
     let todosLosPlatos = document.querySelectorAll(".plato-card");
 
-    // Revisamos uno a uno
     for(let card of todosLosPlatos) {
         
         // Lo mostramos por defecto
@@ -364,7 +360,7 @@ function toggleFiltro(tipo) {
         if (soloEspecialidades === true && card.classList.contains("item-normal"))
             card.classList.add("oculto"); 
 
-        // Regla de Veganos (¡Muy simple de leer!)
+        // Regla de Veganos
         if (soloVegano === true && card.classList.contains("item-vegano") === false)
             card.classList.add("oculto"); 
     }
@@ -372,13 +368,11 @@ function toggleFiltro(tipo) {
     actualizarTextosFiltros();
 }
 
-let btnAlcohol = document.querySelector("#btn-alcohol");
-// Reemplazamos la flecha por 'function()'
+let btnAlcohol = document.querySelector("#btn-alcohol")
 if(btnAlcohol)
     btnAlcohol.addEventListener("click", function() { toggleFiltro('alcohol'); });
 
-let btnEspecialidades = document.querySelector("#btn-especialidades");
-// Reemplazamos la flecha por 'function()'
+let btnEspecialidades = document.querySelector("#btn-especialidades")
 if(btnEspecialidades)
     btnEspecialidades.addEventListener("click", function() { toggleFiltro('especialidades'); });
 
@@ -391,8 +385,6 @@ function cambiarIdioma(nuevoIdioma) {
     localStorage.setItem("idioma_auto_gourmet", idiomaActual); 
     generarCarta();                                            
 }
-
-// Reemplazamos la flecha por 'function()'
 document.querySelector("#btn-es").onclick = function() { cambiarIdioma("es"); };
 document.querySelector("#btn-en").onclick = function() { cambiarIdioma("en"); };
 document.querySelector("#btn-fr").onclick = function() { cambiarIdioma("fr"); };

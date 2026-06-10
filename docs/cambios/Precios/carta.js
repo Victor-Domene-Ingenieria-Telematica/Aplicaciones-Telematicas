@@ -68,7 +68,7 @@ const productos_de = {
     "p1": 'Geräucherter Käsekuchen', "p2": 'Schokoladen-Coulant', "p3": 'Obst der Saison'
 };
 
-// --- NUEVO: Diccionario de precios (en euros) ---
+// Diccionario de precios
 const preciosProductos = {
     "b1": 1.50, "b2": 2.20, "b3": 2.20, "b4": 2.80, "b5": 3.50,
     "e1": 12.00, "e2": 8.50, "e3": 9.00, "e4": 11.50,
@@ -79,7 +79,7 @@ const preciosProductos = {
 };
 
 
-// Miramos si hay un idioma guardado. Si no hay nada (null), ponemos "es" por defecto.
+// Miramos si hay un idioma guardado. Si no hay nada, ponemos "es" por defecto.
 let idiomaActual = localStorage.getItem("idioma_auto_gourmet") || "es";
 
 let mostrandoAlcohol = true;
@@ -98,7 +98,7 @@ const textosFiltros = {
 
 let pedidos = {};
 
-// --- MODIFICADO: Textos del carrito (con las nuevas columnas) ---
+// Textos del carrito 
 const textosCarrito = {
     es: { titulo: "PEDIDO", prod: "Producto", precioUnit: "Precio", cant: "Cant.", totalFila: "Total", accion: "Quitar", vaciar: "VACIAR PEDIDO", granTotal: "TOTAL PEDIDO" },
     en: { titulo: "ORDER", prod: "Product", precioUnit: "Price", cant: "Qty", totalFila: "Total", accion: "Remove", vaciar: "CLEAR ORDER", granTotal: "ORDER TOTAL" },
@@ -122,7 +122,6 @@ function inicializarPedidos() {
         pedidos = JSON.parse(guardados);
     } else {
         // Si no hay datos (primera vez que entra), inicializamos a 0
-        // Usamos el bucle for...of como acordamos para evitar la función flecha
         for (let sublista of lista_menu) {
             for (let i = 1; i < sublista.length; i++) {
                 pedidos[sublista[i]] = 0;
@@ -212,11 +211,9 @@ function generarCarta() {
             nombre.className = "plato-nombre";
             nombre.textContent = prods[idProd];
 
-            // --- ESTO ES LO NUEVO ---
-            let precioTag = document.createElement("div"); // Usamos un div para que se ponga debajo del nombre
+            let precioTag = document.createElement("div");
             precioTag.textContent = preciosProductos[idProd] + " €";
             precioTag.className = "precio";
-            // ------------------------
 
             card.addEventListener("click", function() {
                 pedidos[idProd]++;
@@ -224,7 +221,6 @@ function generarCarta() {
                 actualizarTablaPedidos();
             });
 
-            // Metemos la foto, el nombre y ahora también el precio en la tarjeta
             card.append(imgProd, nombre, precioTag);
             grid.append(card);
         }
@@ -251,7 +247,7 @@ function actualizarTablaPedidos() {
         else if (idiomaActual === "fr") prods = productos_fr;
         else if (idiomaActual === "de") prods = productos_de;
 
-        // 1. Añadimos las dos columnas nuevas al título de la tabla
+        // Añadimos las dos columnas nuevas al título de la tabla
         tabla.innerHTML = `
             <tr class="cabecera-tabla">
                 <th>${textosCarrito[idiomaActual].prod}</th>
@@ -264,7 +260,7 @@ function actualizarTablaPedidos() {
 
         let hayPedidos = false;
         
-        // --- Creamos la variable hucha para el total de todo el pedido ---
+        // Creamos la variable hucha para el total de todo el pedido
         let sumaTotalDelPedido = 0; 
 
         for (let clave in pedidos) {
@@ -274,10 +270,9 @@ function actualizarTablaPedidos() {
                 let cantidad = pedidos[clave];
                 let precio = preciosProductos[clave];
                 
-                // Calculamos cuánto vale esta fila (ej: 2 cervezas x 2.80)
+                // Calculamos cuánto vale esta fila
                 let totalLinea = cantidad * precio;
                 
-                // Lo metemos a la hucha grande
                 sumaTotalDelPedido = sumaTotalDelPedido + totalLinea;
                 
                 let tr = document.createElement("tr");
@@ -320,7 +315,6 @@ function actualizarTablaPedidos() {
         if (hayPedidos) {
             zonaPedidos.classList.remove("oculto");
             
-            // --- ACTUALIZAMOS LA TABLA NUEVA DEL TOTAL ---
             document.querySelector("#etiqueta-total").textContent = textosCarrito[idiomaActual].granTotal;
             document.querySelector("#valor-total").textContent = sumaTotalDelPedido + " €";
             
@@ -332,7 +326,6 @@ function actualizarTablaPedidos() {
 
 const btnVaciarObj = document.querySelector("#btn-vaciar");
 if(btnVaciarObj) {
-    // Reemplazamos la flecha por 'function()'
     btnVaciarObj.addEventListener("click", function() {
         for (let clave in pedidos) {
             pedidos[clave] = 0;
@@ -363,7 +356,6 @@ function toggleFiltro(tipo) {
     // Buscamos todos los platos que hay ahora mismo en la pantalla
     let todosLosPlatos = document.querySelectorAll(".plato-card");
 
-    // Los revisamos uno a uno
     for(let card of todosLosPlatos) {
         
         // Por defecto, le quitamos la clase oculto (lo mostramos)
@@ -375,19 +367,17 @@ function toggleFiltro(tipo) {
 
         // Si solo queremos especialidades y el plato tiene la clase item-normal lo quitamos
         if (soloEspecialidades === true && card.classList.contains("item-normal"))
-            card.classList.add("oculto"); // ...lo escondemos también
+            card.classList.add("oculto");
     }
 
-    // 4. Actualizamos el texto de los botones ("Mostrar alcohol", etc.)
+    // Actualizamos el texto de los botones ("Mostrar alcohol", etc.)
     actualizarTextosFiltros();
 }
 
-const btnAlcohol = document.querySelector("#btn-alcohol");
-// Reemplazamos la flecha por 'function()'
+const btnAlcohol = document.querySelector("#btn-alcohol")
 if(btnAlcohol) btnAlcohol.addEventListener("click", function() { toggleFiltro('alcohol'); });
 
-const btnEspecialidades = document.querySelector("#btn-especialidades");
-// Reemplazamos la flecha por 'function()'
+const btnEspecialidades = document.querySelector("#btn-especialidades")
 if(btnEspecialidades) btnEspecialidades.addEventListener("click", function() { toggleFiltro('especialidades'); });
 
 function cambiarIdioma(nuevoIdioma) {
@@ -395,8 +385,6 @@ function cambiarIdioma(nuevoIdioma) {
     localStorage.setItem("idioma_auto_gourmet", idiomaActual); 
     generarCarta();                                            
 }
-
-// Reemplazamos la flecha por 'function()'
 document.querySelector("#btn-es").onclick = function() { cambiarIdioma("es"); };
 document.querySelector("#btn-en").onclick = function() { cambiarIdioma("en"); };
 document.querySelector("#btn-fr").onclick = function() { cambiarIdioma("fr"); };

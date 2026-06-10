@@ -68,7 +68,7 @@ const productos_de = {
     "p1": 'Geräucherter Käsekuchen', "p2": 'Schokoladen-Coulant', "p3": 'Obst der Saison'
 };
 
-// Miramos si hay un idioma guardado. Si no hay nada (null), ponemos "es" por defecto.
+// Miramos si hay un idioma guardado. Si no hay nada, ponemos "es" por defecto.
 let idiomaActual = localStorage.getItem("idioma_auto_gourmet") || "es";
 
 let mostrandoAlcohol = true;
@@ -109,7 +109,6 @@ function inicializarPedidos() {
         pedidos = JSON.parse(guardados);
     else {
         // Si no hay datos (primera vez que entra), inicializamos a 0
-        // Usamos el bucle for...of como acordamos para evitar la función flecha
         for(let sublista of lista_menu) {
             for(let i = 1; i < sublista.length; i++) {
                 pedidos[sublista[i]] = 0;
@@ -284,7 +283,6 @@ function actualizarTablaPedidos() {
             }
         }
 
-        // Usamos tu clase .oculto en lugar de modificar el style.display
         if(hayPedidos)
             zonaPedidos.classList.remove("oculto");
         else
@@ -294,7 +292,7 @@ function actualizarTablaPedidos() {
 
 const btnVaciarObj = document.querySelector("#btn-vaciar");
 if(btnVaciarObj) {
-    // Reemplazamos la flecha por 'function()'
+    
     btnVaciarObj.addEventListener("click", function() {
         for(let clave in pedidos) {
             pedidos[clave] = 0;
@@ -345,7 +343,6 @@ function toggleFiltro(tipo) {
     if (cajaBuscador)
         textoEscrito = cajaBuscador.value.toLowerCase();
 
-    // Los revisamos uno a uno
     for(let card of todosLosPlatos) {
         
         // Por defecto, le quitamos la clase oculto (lo mostramos)
@@ -357,30 +354,29 @@ function toggleFiltro(tipo) {
 
         // Si solo queremos especialidades y el plato tiene la clase item-normal lo quitamos
         if (soloEspecialidades === true && card.classList.contains("item-normal"))
-            card.classList.add("oculto"); // ...lo escondemos también
+            card.classList.add("oculto"); 
 
         let spanNombre = card.querySelector(".plato-nombre");
         if (spanNombre) {
             let nombreDelPlato = spanNombre.textContent.toLowerCase();
             
-            // Si hay algo escrito en la caja Y el nombre del plato NO incluye ese texto...
             if (textoEscrito !== "" && nombreDelPlato.includes(textoEscrito) === false) {
-                card.classList.add("oculto"); // ¡Lo ocultamos!
+                card.classList.add("oculto");
             }
         }
     }
 
-    // 4. Actualizamos el texto de los botones ("Mostrar alcohol", etc.)
+    // Actualizamos el texto de los botones ("Mostrar alcohol", etc.)
     actualizarTextosFiltros();
 }
 
 let btnAlcohol = document.querySelector("#btn-alcohol");
-// Reemplazamos la flecha por 'function()'
+
 if(btnAlcohol)
     btnAlcohol.addEventListener("click", function() { toggleFiltro('alcohol'); });
 
 let btnEspecialidades = document.querySelector("#btn-especialidades");
-// Reemplazamos la flecha por 'function()'
+
 if(btnEspecialidades)
     btnEspecialidades.addEventListener("click", function() { toggleFiltro('especialidades'); });
 
@@ -398,7 +394,7 @@ function cambiarIdioma(nuevoIdioma) {
     generarCarta();                                            
 }
 
-// Reemplazamos la flecha por 'function()'
+
 document.querySelector("#btn-es").onclick = function() { cambiarIdioma("es"); };
 document.querySelector("#btn-en").onclick = function() { cambiarIdioma("en"); };
 document.querySelector("#btn-fr").onclick = function() { cambiarIdioma("fr"); };
